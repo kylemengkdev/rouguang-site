@@ -6,124 +6,96 @@
 <title>柔光工作室 · Rouguang Studio</title>
 <meta name="description" content="独立摄影 · 没说出口的一切">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Noto+Serif+JP:wght@300;400&family=Noto+Serif:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0c0c0d;
     --ink: #e8e6e1;
     --dim: #6f6d68;
     --line: rgba(232,230,225,0.12);
-    --serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+    --serif: 'Noto Serif SC', 'Noto Serif JP', 'Noto Serif', 'Songti SC', serif;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
   body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--serif);
-    font-weight: 300;
-    letter-spacing: 1.92px;
-    line-height: 2.1;
-    -webkit-font-smoothing: antialiased;
+    background: var(--bg); color: var(--ink);
+    font-family: var(--serif); font-weight:300;
+    letter-spacing:1.92px; line-height:2.1;
+    -webkit-font-smoothing:antialiased;
   }
   ::selection { background: rgba(232,230,225,0.18); }
 
-  /* 顶部 */
   header {
-    position: fixed; top: 0; left: 0; right: 0;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 34px 5vw;
-    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--dim);
-    z-index: 10;
-    mix-blend-mode: difference;
+    position:fixed; top:0; left:0; right:0;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:34px 5vw;
+    font-size:11px; letter-spacing:4px; text-transform:uppercase;
+    color:var(--dim); z-index:10; mix-blend-mode:difference;
   }
-  header a { color: var(--dim); text-decoration: none; transition: color .4s; }
-  header a:hover { color: var(--ink); }
-  nav a { margin-left: 34px; }
+  header a { color:var(--dim); text-decoration:none; transition:color .4s; }
+  header a:hover { color:var(--ink); }
+  nav a { margin-left:34px; }
+  .langs { display:flex; gap:16px; margin-left:34px; }
+  .langs button {
+    background:none; border:none; cursor:pointer;
+    font-family:var(--serif); font-size:11px; letter-spacing:3px;
+    color:var(--dim); padding:0; transition:color .4s;
+  }
+  .langs button.on { color:var(--ink); border-bottom:1px solid var(--ink); padding-bottom:3px; }
 
-  /* Hero */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    text-align: center;
-    padding: 0 8vw;
-    position: relative;
-  }
-  .hero .en { font-size: 11px; letter-spacing: 6px; color: var(--dim); margin-bottom: 42px; }
-  .hero h1 {
-    font-size: clamp(26px, 4.6vw, 44px);
-    font-weight: 400;
-    letter-spacing: 14px;
-    text-indent: 14px;
-    line-height: 2.2;
-  }
-  .hero .sub { margin-top: 46px; font-size: 13px; color: var(--dim); letter-spacing: 5px; }
-  .scroll-hint {
-    position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%);
-    writing-mode: vertical-rl;
-    font-size: 10px; letter-spacing: 6px; color: var(--dim);
-    animation: drift 3.2s ease-in-out infinite;
-  }
-  @keyframes drift { 0%,100%{opacity:.3; transform:translate(-50%,0)} 50%{opacity:.9; transform:translate(-50%,8px)} }
+  .hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:0 8vw; position:relative; }
+  .hero .en { font-size:11px; letter-spacing:6px; color:var(--dim); margin-bottom:42px; }
+  .hero h1 { font-size:clamp(26px,4.6vw,44px); font-weight:400; letter-spacing:14px; text-indent:14px; line-height:2.2; }
+  .hero .sub { margin-top:46px; font-size:13px; color:var(--dim); letter-spacing:5px; }
+  .scroll-hint { position:absolute; bottom:44px; left:50%; transform:translateX(-50%); writing-mode:vertical-rl; font-size:10px; letter-spacing:6px; color:var(--dim); animation:drift 3.2s ease-in-out infinite; }
+  @keyframes drift { 0%,100%{opacity:.3;transform:translate(-50%,0)} 50%{opacity:.9;transform:translate(-50%,8px)} }
 
-  /* 区块 */
-  section { padding: 20vh 8vw; }
-  .sec-label {
-    font-size: 10px; letter-spacing: 6px; color: var(--dim);
-    text-transform: uppercase;
-    margin-bottom: 12vh;
-    display: flex; align-items: center; gap: 22px;
-  }
-  .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  section { padding:20vh 8vw; }
+  .sec-label { font-size:10px; letter-spacing:6px; color:var(--dim); text-transform:uppercase; margin-bottom:12vh; display:flex; align-items:center; gap:22px; }
+  .sec-label::after { content:''; flex:1; height:1px; background:var(--line); }
 
-  /* 作品栅格 — 留白优先 */
-  .works { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14vh 8vw; }
-  .work { position: relative; }
-  .work:nth-child(even) { transform: translateY(9vh); }
+  .works { display:grid; grid-template-columns:repeat(2,1fr); gap:14vh 8vw; }
+  .work { position:relative; }
+  .work:nth-child(even) { transform:translateY(9vh); }
   .frame {
-    aspect-ratio: 4 / 5;
-    background:
-      radial-gradient(120% 90% at 30% 20%, rgba(232,230,225,0.045), transparent 55%),
-      #121213;
-    border: 1px solid var(--line);
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    color: var(--dim);
-    font-size: 11px; letter-spacing: 5px;
-    transition: border-color .6s, background .6s;
-    overflow: hidden;
+    aspect-ratio:4/5;
+    background:radial-gradient(120% 90% at 30% 20%, rgba(232,230,225,0.045), transparent 55%), #121213;
+    border:1px solid var(--line);
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    color:var(--dim); font-size:11px; letter-spacing:5px;
+    transition:border-color .6s;
   }
-  .work:hover .frame { border-color: rgba(232,230,225,0.3); }
-  .frame .num { font-size: 34px; font-weight: 400; letter-spacing: 8px; margin-bottom: 18px; color: rgba(232,230,225,0.34); }
-  .work .meta { margin-top: 26px; font-size: 11px; letter-spacing: 4px; color: var(--dim); display: flex; justify-content: space-between; }
-  /* 实拍图替身：把 img/1.jpg … img/6.jpg 放进仓库，此处自动生效 */
-  .frame img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .work:hover .frame { border-color:rgba(232,230,225,0.3); }
+  .frame .num { font-size:34px; letter-spacing:8px; margin-bottom:18px; color:rgba(232,230,225,0.34); }
+  .work .meta { margin-top:26px; font-size:11px; letter-spacing:4px; color:var(--dim); display:flex; justify-content:space-between; }
 
-  /* 关于 */
-  .about { max-width: 620px; margin: 0 auto; text-align: center; }
-  .about p { font-size: 14px; line-height: 2.8; color: #b9b6b0; }
-  .about p + p { margin-top: 42px; }
+  .about { max-width:620px; margin:0 auto; text-align:center; }
+  .about p { font-size:14px; line-height:2.8; color:#b9b6b0; }
+  .about p + p { margin-top:42px; }
 
-  /* 联络 */
-  .contact { text-align: center; }
-  .contact .line { font-size: clamp(18px, 2.6vw, 26px); letter-spacing: 8px; }
-  .contact .small { margin-top: 40px; font-size: 11px; color: var(--dim); letter-spacing: 4px; line-height: 3; }
-  .contact a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 4px; transition: border-color .4s; }
-  .contact a:hover { border-color: var(--ink); }
+  .contact { text-align:center; }
+  .contact .line { font-size:clamp(18px,2.6vw,26px); letter-spacing:8px; }
+  .contact .small { margin-top:40px; font-size:11px; color:var(--dim); letter-spacing:4px; line-height:3; }
+  .contact a { color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:4px; transition:border-color .4s; }
+  .contact a:hover { border-color:var(--ink); }
 
-  footer {
-    padding: 60px 5vw; text-align: center;
-    font-size: 10px; letter-spacing: 4px; color: var(--dim);
-    border-top: 1px solid var(--line);
-  }
+  footer { padding:60px 5vw; text-align:center; font-size:10px; letter-spacing:4px; color:var(--dim); border-top:1px solid var(--line); }
 
-  /* 移动端 */
-  @media (max-width: 720px) {
-    .works { grid-template-columns: 1fr; gap: 10vh; }
-    .work:nth-child(even) { transform: none; }
-    header { padding: 24px 6vw; }
-    nav a { margin-left: 18px; }
-    .hero h1 { letter-spacing: 8px; text-indent: 8px; }
+  [lang-switch] { display:none; }
+  html[data-lang="zh"] [lang-switch="zh"],
+  html[data-lang="en"] [lang-switch="en"],
+  html[data-lang="ja"] [lang-switch="ja"] { display:inline; }
+  html[data-lang="zh"] p[lang-switch="zh"],
+  html[data-lang="en"] p[lang-switch="en"],
+  html[data-lang="ja"] p[lang-switch="ja"] { display:block; }
+
+  @media (max-width:720px) {
+    .works { grid-template-columns:1fr; gap:10vh; }
+    .work:nth-child(even) { transform:none; }
+    header { padding:24px 6vw; flex-wrap:wrap; }
+    nav a { margin-left:18px; }
+    .langs { margin-left:18px; }
+    .hero h1 { letter-spacing:8px; text-indent:8px; }
   }
 </style>
 </head>
@@ -131,66 +103,97 @@
 
 <header>
   <span>ROUGUANG&nbsp;&nbsp;STUDIO</span>
-  <nav>
-    <a href="#works">works</a>
-    <a href="#about">about</a>
-    <a href="#contact">contact</a>
-  </nav>
+  <div style="display:flex;align-items:center;">
+    <nav>
+      <a href="#works">works</a>
+      <a href="#about">about</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <div class="langs">
+      <button data-setlang="zh" class="on">中</button>
+      <button data-setlang="en">EN</button>
+      <button data-setlang="ja">日</button>
+    </div>
+  </div>
 </header>
 
 <div class="hero">
   <div class="en">PHOTOGRAPHY&nbsp;—&nbsp;SHANGHAI</div>
-  <h1>柔光工作室<br>拍没说出口的一切</h1>
-  <div class="sub">光&nbsp;·&nbsp;物&nbsp;·&nbsp;静默的叙事</div>
+  <h1>
+    <span lang-switch="zh">柔光工作室<br>拍没说出口的一切</span>
+    <span lang-switch="en">ROUGUANG&nbsp;STUDIO<br>Everything&nbsp;Unsaid</span>
+    <span lang-switch="ja">柔光スタジオ<br>言葉にならないものを撮る</span>
+  </h1>
+  <div class="sub">
+    <span lang-switch="zh">光&nbsp;·&nbsp;物&nbsp;·&nbsp;静默的叙事</span>
+    <span lang-switch="en">light&nbsp;·&nbsp;object&nbsp;·&nbsp;silent&nbsp;stories</span>
+    <span lang-switch="ja">光&nbsp;·&nbsp;物&nbsp;·&nbsp;静かな物語</span>
+  </div>
   <div class="scroll-hint">scroll</div>
 </div>
 
 <section id="works">
-  <div class="sec-label">selected&nbsp;works&nbsp;&nbsp;作品</div>
+  <div class="sec-label">
+    <span lang-switch="zh">selected&nbsp;works&nbsp;&nbsp;作品</span>
+    <span lang-switch="en">selected&nbsp;works</span>
+    <span lang-switch="ja">selected&nbsp;works&nbsp;&nbsp;作品</span>
+  </div>
   <div class="works">
     <div class="work">
-      <div class="frame"><span class="num">01</span><span>作品位&nbsp;·&nbsp;img/1.jpg</span></div>
+      <div class="frame"><span class="num">01</span><span>img/1.jpg</span></div>
       <div class="meta"><span>still life</span><span>2026</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">02</span><span>作品位&nbsp;·&nbsp;img/2.jpg</span></div>
+      <div class="frame"><span class="num">02</span><span>img/2.jpg</span></div>
       <div class="meta"><span>ceramic</span><span>2026</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">03</span><span>作品位&nbsp;·&nbsp;img/3.jpg</span></div>
+      <div class="frame"><span class="num">03</span><span>img/3.jpg</span></div>
       <div class="meta"><span>light study</span><span>2026</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">04</span><span>作品位&nbsp;·&nbsp;img/4.jpg</span></div>
+      <div class="frame"><span class="num">04</span><span>img/4.jpg</span></div>
       <div class="meta"><span>textile</span><span>2026</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">05</span><span>作品位&nbsp;·&nbsp;img/5.jpg</span></div>
+      <div class="frame"><span class="num">05</span><span>img/5.jpg</span></div>
       <div class="meta"><span>portrait of object</span><span>2026</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">06</span><span>作品位&nbsp;·&nbsp;img/6.jpg</span></div>
+      <div class="frame"><span class="num">06</span><span>img/6.jpg</span></div>
       <div class="meta"><span>scene</span><span>2026</span></div>
     </div>
   </div>
 </section>
 
 <section id="about">
-  <div class="sec-label">about&nbsp;&nbsp;关于</div>
+  <div class="sec-label">
+    <span lang-switch="zh">about&nbsp;&nbsp;关于</span>
+    <span lang-switch="en">about</span>
+    <span lang-switch="ja">about&nbsp;&nbsp;プロフィール</span>
+  </div>
   <div class="about">
-    <p>我是Kiria，独立摄影师。<br>
-    相信最好的商品影像不是展示，而是<br>
-    让人安静下来的那三秒钟。</p>
-    <p>常用柔光记录材质的呼吸，<br>
-    在器物与光之间，替品牌把话说完——<br>
-    说那些没说出口的。</p>
+    <p lang-switch="zh">我是Kiria，独立摄影师。<br>相信最好的商品影像不是展示，而是<br>让人安静下来的那三秒钟。</p>
+    <p lang-switch="en">I’m Kiria, an independent photographer.<br>I believe the best product image doesn’t display —<br>it quiets you down for three seconds.</p>
+    <p lang-switch="ja">私はKiria、独立系フォトグラファーです。<br>良い商品写真は「見せる」ことではなく、<br>三秒だけ静かになることだと信じています。</p>
+    <p lang-switch="zh">常用柔光记录材质的呼吸，<br>在器物与光之间，替品牌把话说完——<br>说那些没说出口的。</p>
+    <p lang-switch="en">Soft light, recording how materials breathe.<br>Between object and light, I finish the sentence<br>for your brand — the unsaid part.</p>
+    <p lang-switch="ja">柔らかな光で素材の呼吸を記録します。<br>物と光のあいだで、ブランドの言いたくても<br>言えなかったことを、私が言います。</p>
   </div>
 </section>
 
 <section id="contact">
-  <div class="sec-label">contact&nbsp;&nbsp;联络</div>
+  <div class="sec-label">
+    <span lang-switch="zh">contact&nbsp;&nbsp;联络</span>
+    <span lang-switch="en">contact</span>
+    <span lang-switch="ja">contact&nbsp;&nbsp;連絡</span>
+  </div>
   <div class="contact">
-    <div class="line">拍摄合作&nbsp;·&nbsp;欢迎来信</div>
+    <div class="line">
+      <span lang-switch="zh">拍摄合作&nbsp;·&nbsp;欢迎来信</span>
+      <span lang-switch="en">Commissions&nbsp;—&nbsp;feel&nbsp;free&nbsp;to&nbsp;write</span>
+      <span lang-switch="ja">撮影のご依頼&nbsp;—&nbsp;お気軽にどうぞ</span>
+    </div>
     <div class="small">
       小红书&nbsp;>&nbsp;@柔光工作室<br>
       email&nbsp;>&nbsp;<a href="mailto:770870456@qq.com">770870456@qq.com</a>
@@ -198,9 +201,27 @@
   </div>
 </section>
 
-<footer>
-  © 2026 ROUGUANG STUDIO — ALL LIGHTS RESERVED
-</footer>
+<footer>© 2026 ROUGUANG STUDIO — ALL LIGHTS RESERVED</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    function setLang(l) {
+      root.setAttribute('data-lang', l);
+      root.setAttribute('lang', l === 'zh' ? 'zh-CN' : l);
+      try { localStorage.setItem('rg-lang', l); } catch (e) {}
+      document.querySelectorAll('[data-setlang]').forEach(function (b) {
+        b.classList.toggle('on', b.getAttribute('data-setlang') === l);
+      });
+    }
+    document.querySelectorAll('[data-setlang]').forEach(function (b) {
+      b.addEventListener('click', function () { setLang(b.getAttribute('data-setlang')); });
+    });
+    var saved = null;
+    try { saved = localStorage.getItem('rg-lang'); } catch (e) {}
+    setLang(saved || 'zh');
+  })();
+</script>
 
 </body>
 </html>
