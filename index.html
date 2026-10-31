@@ -67,6 +67,9 @@
   }
   .work:hover .frame { border-color:rgba(232,230,225,0.3); }
   .frame .num { font-size:34px; letter-spacing:8px; margin-bottom:18px; color:rgba(232,230,225,0.34); }
+  .frame { position:relative; }
+  .frame img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:opacity .6s; opacity:0.94; }
+  .work:hover .frame img { opacity:1; }
   .work .meta { margin-top:26px; font-size:11px; letter-spacing:4px; color:var(--dim); display:flex; justify-content:space-between; }
 
   .about { max-width:620px; margin:0 auto; text-align:center; }
@@ -140,28 +143,28 @@
   </div>
   <div class="works">
     <div class="work">
-      <div class="frame"><span class="num">01</span><span>img/1.jpg</span></div>
-      <div class="meta"><span>still life</span><span>2026</span></div>
+      <div class="frame"><span class="num">01</span><span>img/1.jpg</span><img src="img/1.jpg" alt="01 — window"></div>
+      <div class="meta"><span>window</span><span>decay</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">02</span><span>img/2.jpg</span></div>
-      <div class="meta"><span>ceramic</span><span>2026</span></div>
+      <div class="frame"><span class="num">02</span><span>img/2.jpg</span><img src="img/2.jpg" alt="02 — bird"></div>
+      <div class="meta"><span>bird</span><span>silence</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">03</span><span>img/3.jpg</span></div>
-      <div class="meta"><span>light study</span><span>2026</span></div>
+      <div class="frame"><span class="num">03</span><span>img/3.jpg</span><img src="img/3.jpg" alt="03 — still life"></div>
+      <div class="meta"><span>still life</span><span>bloom</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">04</span><span>img/4.jpg</span></div>
-      <div class="meta"><span>textile</span><span>2026</span></div>
+      <div class="frame"><span class="num">04</span><span>img/4.jpg</span><img src="img/4.jpg" alt="04 — night blue"></div>
+      <div class="meta"><span>night blue</span><span>passage</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">05</span><span>img/5.jpg</span></div>
-      <div class="meta"><span>portrait of object</span><span>2026</span></div>
+      <div class="frame"><span class="num">05</span><span>img/5.jpg</span><img src="img/5.jpg" alt="05 — light study"></div>
+      <div class="meta"><span>light study</span><span>shadow</span></div>
     </div>
     <div class="work">
-      <div class="frame"><span class="num">06</span><span>img/6.jpg</span></div>
-      <div class="meta"><span>scene</span><span>2026</span></div>
+      <div class="frame"><span class="num">06</span><span>img/6.jpg</span><img src="img/6.jpg" alt="06 — landscape"></div>
+      <div class="meta"><span>landscape</span><span>dusk</span></div>
     </div>
   </div>
 </section>
