@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>柔光工作室 · Rouguang Studio</title>
 <meta name="description" content="独立摄影 · 没说出口的一切">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0c0d'/%3E%3Ccircle cx='16' cy='13' r='6.5' fill='%23e8e6e1' opacity='0.9'/%3E%3Cellipse cx='16' cy='26' rx='9' ry='2.6' fill='%23e8e6e1' opacity='0.16'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Noto+Serif+JP:wght@300;400&family=Noto+Serif:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -24,6 +25,29 @@
     -webkit-font-smoothing:antialiased;
   }
   ::selection { background: rgba(232,230,225,0.18); }
+
+  /* 氛围层：胶片颗粒（Linear式暗度层级 × 摄影师胶片质感，4%透明度） */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 100; pointer-events: none;
+    opacity: 0.038;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 240px 240px;
+  }
+
+  /* 品牌 focus 环（弃浏览器默认蓝） */
+  a:focus-visible, button:focus-visible {
+    outline: 1px solid var(--ink); outline-offset: 4px;
+  }
+
+  /* 细窄滚动条（暗调主题） */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: rgba(232,230,225,0.14); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(232,230,225,0.26); }
+
+  /* 签名交互：滚动显现（唯一的签名动效，克制） */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(0.22,1,0.36,1), transform .9s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.in { opacity: 1; transform: none; }
 
   header {
     position:fixed; top:0; left:0; right:0;
@@ -60,12 +84,16 @@
   .frame {
     aspect-ratio:4/5;
     background:radial-gradient(120% 90% at 30% 20%, rgba(232,230,225,0.045), transparent 55%), #121213;
-    border:1px solid var(--line);
+    border:1px solid rgba(232,230,225,0.08);
     display:flex; flex-direction:column; justify-content:center; align-items:center;
     color:var(--dim); font-size:11px; letter-spacing:5px;
-    transition:border-color .6s;
+    transition:border-color .6s, background .6s, box-shadow .6s;
   }
-  .work:hover .frame { border-color:rgba(232,230,225,0.3); }
+  .work:hover .frame {
+    border-color:rgba(232,230,225,0.22);
+    background:radial-gradient(120% 90% at 30% 20%, rgba(232,230,225,0.07), transparent 55%), #141415;
+    box-shadow:0 0 0 1px rgba(232,230,225,0.03), 0 18px 50px -18px rgba(0,0,0,0.8);
+  }
   .frame .num { font-size:34px; letter-spacing:8px; margin-bottom:18px; color:rgba(232,230,225,0.34); }
   .frame { position:relative; }
   .frame img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; padding:9%; transition:opacity .6s; opacity:1; }
@@ -204,9 +232,16 @@
   </div>
 </section>
 
-<footer>© 2026 ROUGUANG STUDIO — ALL LIGHTS RESERVED</footer>
+<footer>© 2026 ROUGUANG STUDIO — ALL LIGHTS RESERVED<span style="opacity:0.55;"> ｜ 本站没有一张照片被裁切</span></footer>
 
 <script>
+  // 滚动显现（签名动效）
+  (function () {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.work, .about p, .contact .line, .panel').forEach(function (el) { el.classList.add('reveal'); io.observe(el); });
+  })();
   (function () {
     var root = document.documentElement;
     function setLang(l) {
