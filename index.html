@@ -70,10 +70,10 @@
 
   /* Hero 入场编排（叙事级时长，可超300ms） */
   .hero .en, .hero h1, .hero .sub, .hero .scroll-hint { opacity:0; transform:translateY(18px); animation:none; }
-  body.loaded .hero .en { animation: rise1s var(--ease-out) .15s forwards; }
-  body.loaded .hero h1 { animation: rise1.15s var(--ease-out) .38s forwards; }
-  body.loaded .hero .sub { animation: rise1s var(--ease-out) .68s forwards; }
-  body.loaded .hero .scroll-hint { animation: rise1s var(--ease-out) .95s forwards, drift3.2s ease-in-out2.2s infinite; }
+  body.loaded .hero .en { animation: rise 1s var(--ease-out) .15s forwards; }
+  body.loaded .hero h1 { animation: rise 1.15s var(--ease-out) .38s forwards; }
+  body.loaded .hero .sub { animation: rise 1s var(--ease-out) .68s forwards; }
+  body.loaded .hero .scroll-hint { animation: rise 1s var(--ease-out) .95s forwards, drift 3.2s ease-in-out 2.2s infinite; }
   @keyframes rise { to { opacity:1; transform:none; } }
 
   /* 签名交互：滚动显现（唯一的签名动效，克制） */
