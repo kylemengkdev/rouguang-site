@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Noto+Serif+JP:wght@300;400&family=Noto+Serif:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
     --bg: #0c0c0d;
     --ink: #e8e6e1;
     --dim: #6f6d68;
@@ -44,6 +46,33 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: rgba(232,230,225,0.14); border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(232,230,225,0.26); }
+
+  /* 动效层（motion-craft 规范：自定义缓动/UI≤300ms/无ease-in） */
+  .frame img { cursor: zoom-in; transition: opacity .6s, transform .5s var(--ease-out); }
+  .work:hover .frame img { transform: scale(1.025); }
+  header a:active, .langs button:active { transform: scale(0.96); }
+  header a, .langs button { transition: color .4s, transform .12s ease; }
+  .contact a { position:relative; }
+  .contact a::after { content:''; position:absolute; left:0; bottom:-2px; width:100%; height:1px; background:var(--ink); transform:scaleX(0); transform-origin:left; transition:transform .35s var(--ease-out); }
+  .contact a:hover::after { transform:scaleX(1); }
+
+  /* 灯箱：点击画作全屏细看（美术馆仪式感） */
+  .lightbox { position:fixed; inset:0; z-index:200; background:rgba(8,8,9,0.96); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .28s var(--ease-out); }
+  .lightbox.on { opacity:1; pointer-events:auto; }
+  .lightbox img { max-width:88vw; max-height:86vh; box-shadow:0 40px 120px -30px rgba(0,0,0,0.9); transform:scale(0.94); transition:transform .42s var(--ease-out); cursor:zoom-out; }
+  .lightbox.on img { transform:scale(1); }
+  .lightbox .lb-cap { position:absolute; bottom:34px; left:0; right:0; text-align:center; font-size:11px; letter-spacing:4px; color:var(--dim); }
+  .lightbox .lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--dim); font-size:26px; cursor:pointer; padding:24px; transition:color .3s; font-family:var(--serif); }
+  .lightbox .lb-nav:hover { color:var(--ink); }
+  .lightbox .lb-prev { left:2vw; } .lightbox .lb-next { right:2vw; }
+
+  /* Hero 入场编排（叙事级时长，可超300ms） */
+  .hero .en, .hero h1, .hero .sub, .hero .scroll-hint { opacity:0; transform:translateY(18px); animation:none; }
+  body.loaded .hero .en { animation: rise1s var(--ease-out) .15s forwards; }
+  body.loaded .hero h1 { animation: rise1.15s var(--ease-out) .38s forwards; }
+  body.loaded .hero .sub { animation: rise1s var(--ease-out) .68s forwards; }
+  body.loaded .hero .scroll-hint { animation: rise1s var(--ease-out) .95s forwards, drift3.2s ease-in-out2.2s infinite; }
+  @keyframes rise { to { opacity:1; transform:none; } }
 
   /* 签名交互：滚动显现（唯一的签名动效，克制） */
   .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(0.22,1,0.36,1), transform .9s cubic-bezier(0.22,1,0.36,1); }
@@ -232,9 +261,51 @@
   </div>
 </section>
 
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <img id="lb-img" src="" alt="">
+  <button class="lb-nav lb-prev" aria-label="上一张">←</button>
+  <button class="lb-nav lb-next" aria-label="下一张">→</button>
+  <div class="lb-cap" id="lb-cap"></div>
+</div>
+
 <footer>© 2026 ROUGUANG STUDIO — ALL LIGHTS RESERVED<span style="color:rgba(232,230,225,0.62);"> ｜ 本站没有一张照片被裁切</span></footer>
 
 <script>
+  // Hero 入场触发
+  window.addEventListener('load', function () { document.body.classList.add('loaded'); });
+  setTimeout(function () { document.body.classList.add('loaded'); }, 1200);
+
+  // 灯箱：点击画作细看
+  (function () {
+    var lb = document.getElementById('lightbox');
+    var img = document.getElementById('lb-img');
+    var cap = document.getElementById('lb-cap');
+    var works = Array.from(document.querySelectorAll('.work'));
+    var idx = 0;
+    function src(i) { var im = works[i].querySelector('img'); return im ? im.src : ''; }
+    function label(i) { var m = works[i].querySelector('.meta'); return m ? m.innerText.replace(/\n/g, ' · ') : ''; }
+    function show(i) {
+      idx = (i + works.length) % works.length;
+      img.src = src(idx); cap.textContent = '0' + (idx + 1) + ' / 0' + works.length + ' — ' + label(idx);
+    }
+    works.forEach(function (w, i) {
+      var im = w.querySelector('img');
+      if (!im) return;
+      w.addEventListener('click', function () { show(i); lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); });
+    });
+    lb.addEventListener('click', function (e) {
+      if (e.target === lb || e.target === img) { lb.classList.remove('on'); lb.setAttribute('aria-hidden', 'true'); }
+      else if (e.target.classList.contains('lb-prev')) { show(idx - 1); }
+      else if (e.target.classList.contains('lb-next')) { show(idx + 1); }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (!lb.classList.contains('on')) return;
+      if (e.key === 'Escape') { lb.classList.remove('on'); }
+      if (e.key === 'ArrowLeft') { show(idx - 1); }
+      if (e.key === 'ArrowRight') { show(idx + 1); }
+    });
+  })();
+
   // 滚动显现（签名动效）
   (function () {
     var io = new IntersectionObserver(function (es) {
