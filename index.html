@@ -59,10 +59,12 @@
   /* 灯箱：点击画作全屏细看（美术馆仪式感） */
   .lightbox { position:fixed; inset:0; z-index:200; background:rgba(8,8,9,0.96); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .28s var(--ease-out); }
   .lightbox.on { opacity:1; pointer-events:auto; }
-  .lightbox img { max-width:88vw; max-height:86vh; box-shadow:0 40px 120px -30px rgba(0,0,0,0.9); transform:scale(0.94); transition:transform .42s var(--ease-out); cursor:zoom-out; }
+  .lightbox img { max-width:86vw; max-height:82vh; padding:14px; background:#101011; border:1px solid rgba(232,230,225,0.14); box-shadow:0 40px 120px -30px rgba(0,0,0,0.9); transform:scale(0.94); transition:transform .42s var(--ease-out); cursor:zoom-out; }
   .lightbox.on img { transform:scale(1); }
-  .lightbox .lb-cap { position:absolute; bottom:34px; left:0; right:0; text-align:center; font-size:11px; letter-spacing:4px; color:var(--dim); }
-  .lightbox .lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--dim); font-size:26px; cursor:pointer; padding:24px; transition:color .3s; font-family:var(--serif); }
+  .lightbox .lb-cap { position:absolute; bottom:34px; left:0; right:0; text-align:center; font-size:12px; letter-spacing:5px; color:rgba(232,230,225,0.72); }
+  .lightbox .lb-prev:hover { transform:translateY(-50%) translateX(-5px); }
+  .lightbox .lb-next:hover { transform:translateY(-50%) translateX(5px); }
+  .lightbox .lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:none; border:none; color:rgba(232,230,225,0.75); font-size:30px; cursor:pointer; padding:24px; transition:color .3s, transform .3s var(--ease-out); font-family:var(--serif); }
   .lightbox .lb-nav:hover { color:var(--ink); }
   .lightbox .lb-prev { left:2vw; } .lightbox .lb-next { right:2vw; }
 
