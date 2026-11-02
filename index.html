@@ -78,7 +78,8 @@
 
   /* 签名交互：滚动显现（唯一的签名动效，克制） */
   .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(0.22,1,0.36,1), transform .9s cubic-bezier(0.22,1,0.36,1); }
-  .reveal.in { opacity: 1; transform: none; }
+  .reveal.in { opacity:1; transform:none; }
+  .works.reveal { transition: height .8s var(--ease-out), opacity .7s var(--ease-out), transform .7s var(--ease-out); }
 
   header {
     position:fixed; top:0; left:0; right:0;
@@ -109,27 +110,46 @@
   .sec-label { font-size:10px; letter-spacing:6px; color:var(--dim); text-transform:uppercase; margin-bottom:12vh; display:flex; align-items:center; gap:22px; }
   .sec-label::after { content:''; flex:1; height:1px; background:var(--line); }
 
-  .works { display:grid; grid-template-columns:repeat(2,1fr); gap:14vh 8vw; }
-  .work { position:relative; }
-  .work:nth-child(even) { transform:translateY(9vh); }
-  .frame {
-    aspect-ratio:4/5;
-    background:radial-gradient(120% 90% at 30% 20%, rgba(232,230,225,0.045), transparent 55%), #121213;
+  /* —— 画册 · 名姓片 —— */
+  .works { position:relative; display:block; height:660px; }
+  .work {
+    position:absolute; top:0; left:0;
+    width:var(--card-w,300px);
+    background:#0f0f10;
     border:1px solid rgba(232,230,225,0.11);
-    display:flex; flex-direction:column; justify-content:center; align-items:center;
-    color:var(--dim); font-size:11px; letter-spacing:5px;
-    transition:border-color .6s, background .6s, box-shadow .6s;
+    padding:13px 13px 0;
+    z-index:var(--zi,1);
+    transform-origin:50% 50%;
+    transition:transform .8s var(--ease-out), opacity .6s, border-color .5s, box-shadow .5s;
+    will-change:transform;
+    box-shadow:0 34px 70px -32px rgba(0,0,0,0.85);
+    opacity:0;
   }
-  .work:hover .frame {
-    border-color:rgba(232,230,225,0.22);
-    background:radial-gradient(120% 90% at 30% 20%, rgba(232,230,225,0.07), transparent 55%), #141415;
-    box-shadow:0 0 0 1px rgba(232,230,225,0.03), 0 18px 50px -18px rgba(0,0,0,0.8);
+  .works.ready .work { opacity:1; }
+  .works:not(.open) .work { cursor:pointer; }
+  .work:hover { border-color:rgba(232,230,225,0.24); }
+  .frame {
+    aspect-ratio:1/1;
+    background:radial-gradient(120% 90% at 30% 20%, rgba(232,230,225,0.045), transparent 55%), #121213;
+    border:1px solid rgba(232,230,225,0.08);
+    position:relative;
+    transition:border-color .6s;
+    cursor:zoom-in;
   }
-  .frame .num { font-size:34px; letter-spacing:8px; margin-bottom:18px; color:rgba(232,230,225,0.34); }
-  .frame { position:relative; }
-  .frame img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; padding:9%; transition:opacity .6s; opacity:1; }
-  .work:hover .frame img { opacity:1; }
-  .work .meta { margin-top:26px; font-size:11px; letter-spacing:4px; color:rgba(232,230,225,0.58); display:flex; justify-content:space-between; }
+  .frame img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; padding:8%; transition:transform .5s var(--ease-out); }
+  .work:hover .frame img { transform:scale(1.03); }
+  .work:hover .frame { border-color:rgba(232,230,225,0.2); }
+  .frame .num { position:absolute; top:9px; right:12px; z-index:2; font-size:11px; letter-spacing:5px; color:rgba(232,230,225,0.42); }
+  .frame > span:not(.num) { display:none; }
+  .work .meta { display:flex; justify-content:space-between; align-items:center; padding:15px 3px 14px; margin-top:12px; font-size:11px; letter-spacing:5px; color:rgba(232,230,225,0.62); border-top:1px solid rgba(232,230,225,0.07); }
+  .work .meta span:last-child { color:var(--dim); }
+
+  .album-hint { position:absolute; left:0; right:0; bottom:-4px; text-align:center; font-size:11px; letter-spacing:6px; color:var(--dim); cursor:pointer; transition:opacity .45s; padding:16px 0; }
+  .album-hint:hover { color:rgba(232,230,225,0.75); }
+  .works.open .album-hint { opacity:0; pointer-events:none; }
+  .album-close { position:absolute; top:-4px; right:0; z-index:30; font-size:11px; letter-spacing:5px; color:var(--dim); cursor:pointer; opacity:0; pointer-events:none; transition:opacity .5s .35s, color .3s; }
+  .album-close:hover { color:var(--ink); }
+  .works.open .album-close { opacity:1; pointer-events:auto; }
 
   .about { max-width:620px; margin:0 auto; text-align:center; }
   .about p { font-size:14px; line-height:2.8; color:#b9b6b0; }
@@ -152,8 +172,6 @@
   html[data-lang="ja"] p[lang-switch="ja"] { display:block; }
 
   @media (max-width:720px) {
-    .works { grid-template-columns:1fr; gap:10vh; }
-    .work:nth-child(even) { transform:none; }
     header { padding:24px 6vw; flex-wrap:wrap; }
     nav a { margin-left:18px; }
     .langs { margin-left:18px; }
@@ -200,7 +218,8 @@
     <span lang-switch="en">selected&nbsp;works</span>
     <span lang-switch="ja">selected&nbsp;works&nbsp;&nbsp;作品</span>
   </div>
-  <div class="works">
+  <div class="works" id="worksAlbum">
+    <div class="album-close" id="albumClose"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
     <div class="work">
       <div class="frame"><span class="num">01</span><span>img/1.jpg</span><img src="img/1.jpg" alt="01 — window"></div>
       <div class="meta"><span>window</span><span>decay</span></div>
@@ -225,6 +244,7 @@
       <div class="frame"><span class="num">06</span><span>img/6.jpg</span><img src="img/6.jpg" alt="06 — landscape"></div>
       <div class="meta"><span>landscape</span><span>dusk</span></div>
     </div>
+    <div class="album-hint" id="albumHint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
   </div>
 </section>
 
@@ -272,35 +292,101 @@
   window.addEventListener('load', function () { document.body.classList.add('loaded'); });
   setTimeout(function () { document.body.classList.add('loaded'); }, 1200);
 
-  // 灯箱：点击画作细看
+  // —— 画册开合 + 灯箱（合并模块）——
   (function () {
+    var album = document.getElementById('worksAlbum');
     var lb = document.getElementById('lightbox');
     var img = document.getElementById('lb-img');
     var cap = document.getElementById('lb-cap');
-    var works = Array.from(document.querySelectorAll('.work'));
+    var works = Array.from(album.querySelectorAll('.work'));
     var idx = 0;
+
+    // ---- 布局引擎：合=错位牌堆 / 开=网格罗列 ----
+    var STACK = [
+      { r: -2.2, dx: 0, dy: 0 },
+      { r: 3.4, dx: -7, dy: 5 },
+      { r: -3.1, dx: 6, dy: 9 },
+      { r: 2.4, dx: -5, dy: 13 },
+      { r: -4.2, dx: 8, dy: 17 },
+      { r: 3.2, dx: -6, dy: 21 }
+    ];
+    function layout() {
+      var open = album.classList.contains('open');
+      var W = album.clientWidth || 800;
+      var cardW = Math.round(Math.min(330, Math.max(210, W * (W >= 980 ? 0.26 : W >= 640 ? 0.38 : 0.8))));
+      album.style.setProperty('--card-w', cardW + 'px');
+      var cardH = works[0] ? works[0].offsetHeight : 360;
+      var cols = W >= 980 ? 3 : W >= 640 ? 2 : 1;
+      var gapX = Math.max(22, Math.round(W * 0.035));
+      var gapY = Math.max(60, Math.round(window.innerHeight * 0.085));
+      var maxBottom = 0;
+      works.forEach(function (w, i) {
+        var x, y, r, d;
+        if (open) {
+          var c = i % cols, row = Math.floor(i / cols);
+          var cellW = (W - gapX * (cols - 1)) / cols;
+          x = Math.round(c * (cellW + gapX) + (cellW - cardW) / 2);
+          y = row * (cardH + gapY);
+          r = 0;
+          d = i * 65;
+          w.style.setProperty('--zi', 1);
+        } else {
+          var s = STACK[i] || { r: 0, dx: 0, dy: i * 3 };
+          x = Math.round((W - cardW) / 2) + s.dx;
+          y = 16 + s.dy;
+          r = s.r;
+          d = (works.length - 1 - i) * 55;
+          w.style.setProperty('--zi', works.length - i);
+        }
+        w.style.transitionDelay = d + 'ms, 0ms, 0ms, 0ms';
+        w.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + r + 'deg)';
+        maxBottom = Math.max(maxBottom, y + cardH);
+      });
+      album.style.height = Math.round(maxBottom + 64) + 'px';
+    }
+    function toggle(open) {
+      album.classList.toggle('open', open);
+      layout();
+    }
+
+    // ---- 灯箱 ----
     function src(i) { var im = works[i].querySelector('img'); return im ? im.src : ''; }
     function label(i) { var m = works[i].querySelector('.meta'); return m ? m.innerText.replace(/\n/g, ' · ') : ''; }
     function show(i) {
       idx = (i + works.length) % works.length;
       img.src = src(idx); cap.textContent = '0' + (idx + 1) + ' / 0' + works.length + ' — ' + label(idx);
     }
-    works.forEach(function (w, i) {
-      var im = w.querySelector('img');
-      if (!im) return;
-      w.addEventListener('click', function () { show(i); lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); });
+
+    // ---- 委托交互：合上点任意处→展开；展开点卡片→灯箱；收起钮→合上 ----
+    album.addEventListener('click', function (e) {
+      if (e.target.closest('.album-close')) { toggle(false); return; }
+      if (!album.classList.contains('open')) { toggle(true); return; }
+      var w = e.target.closest('.work');
+      if (w) { var i = works.indexOf(w); if (i >= 0) { show(i); lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); } }
     });
+
     lb.addEventListener('click', function (e) {
       if (e.target === lb || e.target === img) { lb.classList.remove('on'); lb.setAttribute('aria-hidden', 'true'); }
       else if (e.target.classList.contains('lb-prev')) { show(idx - 1); }
       else if (e.target.classList.contains('lb-next')) { show(idx + 1); }
     });
     document.addEventListener('keydown', function (e) {
-      if (!lb.classList.contains('on')) return;
-      if (e.key === 'Escape') { lb.classList.remove('on'); }
-      if (e.key === 'ArrowLeft') { show(idx - 1); }
-      if (e.key === 'ArrowRight') { show(idx + 1); }
+      if (lb.classList.contains('on')) {
+        if (e.key === 'Escape') { lb.classList.remove('on'); }
+        if (e.key === 'ArrowLeft') { show(idx - 1); }
+        if (e.key === 'ArrowRight') { show(idx + 1); }
+        return;
+      }
+      if (e.key === 'Escape' && album.classList.contains('open')) { toggle(false); }
     });
+
+    // ---- 初始化 / 响应式重排 ----
+    layout();
+    requestAnimationFrame(function () { album.classList.add('ready'); layout(); });
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(layout); }
+    window.addEventListener('load', layout);
+    var rt;
+    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(layout, 180); });
   })();
 
   // 滚动显现（签名动效）
@@ -308,7 +394,7 @@
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
     }, { threshold: 0.12 });
-    document.querySelectorAll('.work, .about p, .contact .line, .panel').forEach(function (el) { el.classList.add('reveal'); io.observe(el); });
+    document.querySelectorAll('.works, .about p, .contact .line, .panel').forEach(el => el.classList.add('reveal'));
   })();
   (function () {
     var root = document.documentElement;
