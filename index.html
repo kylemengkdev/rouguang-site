@@ -218,7 +218,7 @@
     <span lang-switch="en">selected&nbsp;works</span>
     <span lang-switch="ja">selected&nbsp;works&nbsp;&nbsp;作品</span>
   </div>
-  <div class="works" id="worksAlbum">
+  <div class="works ready" id="worksAlbum">
     <div class="album-close" id="albumClose"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
     <div class="work">
       <div class="frame"><span class="num">01</span><span>img/1.jpg</span><img src="img/1.jpg" alt="01 — window"></div>
@@ -292,9 +292,11 @@
   window.addEventListener('load', function () { document.body.classList.add('loaded'); });
   setTimeout(function () { document.body.classList.add('loaded'); }, 1200);
 
-  // —— 画册开合 + 灯箱（合并模块）——
+  // —— 画册开合 + 灯箱（合并模块，故障隔离）——
+  try {
   (function () {
     var album = document.getElementById('worksAlbum');
+    if (!album) throw new Error('worksAlbum missing');
     var lb = document.getElementById('lightbox');
     var img = document.getElementById('lb-img');
     var cap = document.getElementById('lb-cap');
@@ -388,6 +390,7 @@
     var rt;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(layout, 180); });
   })();
+  } catch (e) { console.warn('album module degraded:', e); }
 
   // 滚动显现（签名动效）
   (function () {
@@ -413,6 +416,19 @@
     try { saved = localStorage.getItem('rg-lang'); } catch (e) {}
     setLang(saved || 'zh');
   })();
+</script>
+
+<script>
+/* —— 失效保护（独立代码块）：主脚本无论死活，2.6秒后一切强制可见 —— */
+setTimeout(function () {
+  try {
+    document.body.classList.add('loaded');
+    var rl = document.querySelectorAll('.reveal:not(.in)');
+    for (var i = 0; i < rl.length; i++) rl[i].classList.add('in');
+    var al = document.getElementById('worksAlbum');
+    if (al) al.classList.add('ready');
+  } catch (e) {}
+}, 2600);
 </script>
 
 </body>
