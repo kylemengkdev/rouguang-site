@@ -165,6 +165,35 @@
   .album-close:hover::before { color:#f2f0eb; }
   .works.open .album-close { opacity:1; pointer-events:auto; }
 
+  /* —— 画册v3：工具栏 + 分类 + 双视图 —— */
+  .works-toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:7vh; }
+  .works-toolbar .cats, .works-toolbar .views { display:flex; gap:10px; flex-wrap:wrap; }
+  .pill {
+    font-size:11px; letter-spacing:4px; font-family:var(--serif);
+    padding:9px 20px; border-radius:999px;
+    border:1px solid rgba(232,230,225,0.18);
+    background:transparent; color:var(--dim); cursor:pointer;
+    transition:border-color .3s, color .3s, background .3s;
+  }
+  .pill:hover { border-color:rgba(232,230,225,0.5); color:rgba(232,230,225,0.85); }
+  .pill.on { background:rgba(232,230,225,0.1); border-color:rgba(232,230,225,0.55); color:#f2f0eb; }
+
+  .work.cat-hidden { display:none; }
+  .works-empty { display:none; text-align:center; padding:14vh 0; font-size:12px; letter-spacing:7px; color:var(--dim); }
+  .works-empty.show { display:block; }
+
+  /* 网格视图（高密度简单档） */
+  .works.grid-view { height:auto !important; display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px; align-items:start; }
+  .works.grid-view .work { position:static !important; width:100% !important; transform:none !important; padding:9px 9px 0; transition:opacity .35s, border-color .3s, box-shadow .3s !important; }
+  .works.grid-view .work:hover { transform:translateY(-4px) !important; border-color:rgba(232,230,225,0.3); box-shadow:0 24px 50px -24px rgba(0,0,0,0.9); }
+  .works.grid-view .album-hint, .works.grid-view .album-close { display:none; }
+  .works.grid-view .frame .num { font-size:10px; top:6px; right:8px; }
+  .works.grid-view .frame img { padding:7%; }
+  .works.grid-view .work .meta { padding:10px 2px 10px; margin-top:8px; font-size:10px; letter-spacing:3px; }
+  .works.grid-view .work .meta span:last-child { display:none; }
+  .works.switching .work { opacity:.12; }
+  .works.switching .album-hint, .works.switching .album-close { opacity:0 !important; }
+
   .about { max-width:620px; margin:0 auto; text-align:center; }
   .about p { font-size:14px; line-height:2.8; color:#b9b6b0; }
   .about p + p { margin-top:42px; }
@@ -232,34 +261,47 @@
     <span lang-switch="en">selected&nbsp;works</span>
     <span lang-switch="ja">selected&nbsp;works&nbsp;&nbsp;作品</span>
   </div>
+  <div class="works-toolbar">
+    <div class="cats">
+      <button class="pill on" data-cat="all"><span lang-switch="zh">全部</span><span lang-switch="en">all</span><span lang-switch="ja">すべて</span></button>
+      <button class="pill" data-cat="photo"><span lang-switch="zh">照片</span><span lang-switch="en">photo</span><span lang-switch="ja">写真</span></button>
+      <button class="pill" data-cat="video"><span lang-switch="zh">视频</span><span lang-switch="en">video</span><span lang-switch="ja">動画</span></button>
+      <button class="pill" data-cat="music"><span lang-switch="zh">音乐</span><span lang-switch="en">music</span><span lang-switch="ja">音楽</span></button>
+    </div>
+    <div class="views">
+      <button class="pill on" data-view="album"><span lang-switch="zh">画册</span><span lang-switch="en">album</span><span lang-switch="ja">画帖</span></button>
+      <button class="pill" data-view="grid"><span lang-switch="zh">网格</span><span lang-switch="en">grid</span><span lang-switch="ja">格子</span></button>
+    </div>
+  </div>
   <div class="works ready" id="worksAlbum">
     <div class="album-close" id="albumClose"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
-    <div class="work">
+    <div class="work" data-cat="photo" data-type="photo">
       <div class="frame"><span class="num">01</span><span>img/1.jpg</span><img src="img/1.jpg" alt="01 — window"></div>
       <div class="meta"><span>window</span><span>decay</span></div>
     </div>
-    <div class="work">
+    <div class="work" data-cat="photo" data-type="photo">
       <div class="frame"><span class="num">02</span><span>img/2.jpg</span><img src="img/2.jpg" alt="02 — bird"></div>
       <div class="meta"><span>bird</span><span>silence</span></div>
     </div>
-    <div class="work">
+    <div class="work" data-cat="photo" data-type="photo">
       <div class="frame"><span class="num">03</span><span>img/3.jpg</span><img src="img/3.jpg" alt="03 — still life"></div>
       <div class="meta"><span>still life</span><span>bloom</span></div>
     </div>
-    <div class="work">
+    <div class="work" data-cat="photo" data-type="photo">
       <div class="frame"><span class="num">04</span><span>img/4.jpg</span><img src="img/4.jpg" alt="04 — night blue"></div>
       <div class="meta"><span>night blue</span><span>passage</span></div>
     </div>
-    <div class="work">
+    <div class="work" data-cat="photo" data-type="photo">
       <div class="frame"><span class="num">05</span><span>img/5.jpg</span><img src="img/5.jpg" alt="05 — light study"></div>
       <div class="meta"><span>light study</span><span>shadow</span></div>
     </div>
-    <div class="work">
+    <div class="work" data-cat="photo" data-type="photo">
       <div class="frame"><span class="num">06</span><span>img/6.jpg</span><img src="img/6.jpg" alt="06 — landscape"></div>
       <div class="meta"><span>landscape</span><span>dusk</span></div>
     </div>
     <div class="album-hint" id="albumHint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
   </div>
+  <div class="works-empty" id="worksEmpty"><span lang-switch="zh">该分类的作品，还在路上</span><span lang-switch="en">works in this category are on the way</span><span lang-switch="ja">このカテゴリーの作品は、まだ旅途中</span></div>
 </section>
 
 <section id="about">
@@ -316,6 +358,15 @@
     var cap = document.getElementById('lb-cap');
     var works = Array.from(album.querySelectorAll('.work'));
     var idx = 0;
+    var state = { view: 'album', cat: 'all' };
+    try { state.view = localStorage.getItem('rg-view') || 'album'; state.cat = localStorage.getItem('rg-cat') || 'all'; } catch (e) {}
+    function vis() { return works.filter(function (w) { return !w.classList.contains('cat-hidden'); }); }
+    function isGrid() { return state.view === 'grid'; }
+    function updateEmpty() {
+      var n = vis().length;
+      document.getElementById('worksEmpty').classList.toggle('show', n === 0);
+      album.style.display = n === 0 ? 'none' : '';
+    }
 
     // ---- 布局引擎：合=错位牌堆 / 开=网格罗列 ----
     var STACK = [
@@ -327,6 +378,7 @@
       { r: 3.2, dx: -6, dy: 21 }
     ];
     function layout() {
+      if (isGrid() || !vis().length) { album.style.height = ''; return; }
       var open = album.classList.contains('open');
       var W = album.clientWidth || 800;
       var cardW = Math.round(Math.min(330, Math.max(210, W * (W >= 980 ? 0.26 : W >= 640 ? 0.38 : 0.8))));
@@ -336,7 +388,8 @@
       var gapX = Math.max(22, Math.round(W * 0.035));
       var gapY = Math.max(60, Math.round(window.innerHeight * 0.085));
       var maxBottom = 0;
-      works.forEach(function (w, i) {
+      var list = vis();
+      list.forEach(function (w, i) {
         var x, y, r, d;
         if (open) {
           var c = i % cols, row = Math.floor(i / cols);
@@ -351,8 +404,8 @@
           x = Math.round((W - cardW) / 2) + s.dx;
           y = 16 + s.dy;
           r = s.r;
-          d = (works.length - 1 - i) * 55;
-          w.style.setProperty('--zi', works.length - i);
+          d = (list.length - 1 - i) * 55;
+          w.style.setProperty('--zi', list.length - i);
         }
         w.style.transitionDelay = d + 'ms, 0ms, 0ms, 0ms';
         w.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + r + 'deg)';
@@ -366,19 +419,22 @@
     }
 
     // ---- 灯箱 ----
-    function src(i) { var im = works[i].querySelector('img'); return im ? im.src : ''; }
-    function label(i) { var m = works[i].querySelector('.meta'); return m ? m.innerText.replace(/\n/g, ' · ') : ''; }
+    function src(i) { var v = vis(); var im = v[i] ? v[i].querySelector('img') : null; return im ? im.src : ''; }
+    function label(i) { var v = vis(); var m = v[i] ? v[i].querySelector('.meta') : null; return m ? m.innerText.replace(/\n/g, ' · ') : ''; }
     function show(i) {
-      idx = (i + works.length) % works.length;
-      img.src = src(idx); cap.textContent = '0' + (idx + 1) + ' / 0' + works.length + ' — ' + label(idx);
+      var n = vis().length; if (!n) return;
+      idx = (i + n) % n;
+      img.src = src(idx); cap.textContent = '0' + (idx + 1) + ' / 0' + n + ' — ' + label(idx);
     }
+    function showCard(w) { var i = vis().indexOf(w); if (i >= 0) { show(i); lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); } }
 
     // ---- 委托交互：合上点任意处→展开；展开点卡片→灯箱；收起钮→合上 ----
     album.addEventListener('click', function (e) {
       if (e.target.closest('.album-close')) { toggle(false); return; }
-      if (!album.classList.contains('open')) { toggle(true); return; }
       var w = e.target.closest('.work');
-      if (w) { var i = works.indexOf(w); if (i >= 0) { show(i); lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); } }
+      if (isGrid()) { if (w && !w.classList.contains('cat-hidden')) showCard(w); return; }
+      if (!album.classList.contains('open')) { toggle(true); return; }
+      if (w && !w.classList.contains('cat-hidden')) showCard(w);
     });
 
     lb.addEventListener('click', function (e) {
@@ -395,6 +451,53 @@
       }
       if (e.key === 'Escape' && album.classList.contains('open')) { toggle(false); }
     });
+
+    // ---- 工具栏：分类筛选 ----
+    document.querySelectorAll('.pill[data-cat]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        state.cat = b.getAttribute('data-cat');
+        try { localStorage.setItem('rg-cat', state.cat); } catch (e) {}
+        document.querySelectorAll('.pill[data-cat]').forEach(function (x) { x.classList.toggle('on', x === b); });
+        works.forEach(function (w) {
+          var hit = state.cat === 'all' || w.getAttribute('data-cat') === state.cat;
+          w.classList.toggle('cat-hidden', !hit);
+        });
+        updateEmpty();
+        if (!isGrid()) layout();
+      });
+    });
+
+    // ---- 工具栏：视图切换（画册 ↔ 网格）----
+    document.querySelectorAll('.pill[data-view]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = b.getAttribute('data-view');
+        if (v === state.view) return;
+        state.view = v;
+        try { localStorage.setItem('rg-view', v); } catch (e) {}
+        album.classList.add('switching');
+        setTimeout(function () {
+          document.querySelectorAll('.pill[data-view]').forEach(function (x) { x.classList.toggle('on', x === b); });
+          album.classList.toggle('grid-view', v === 'grid');
+          if (v === 'grid') {
+            album.classList.remove('open');
+            works.forEach(function (w) { w.style.transform = ''; w.style.transitionDelay = ''; w.style.removeProperty('--zi'); });
+            album.style.height = '';
+          } else { layout(); }
+          updateEmpty();
+          album.classList.remove('switching');
+        }, 170);
+      });
+    });
+
+    // ---- 状态恢复（分类/视图，用户上次的选择）----
+    if (state.view === 'grid') album.classList.add('grid-view');
+    document.querySelectorAll('.pill[data-cat]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-cat') === state.cat); });
+    document.querySelectorAll('.pill[data-view]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-view') === state.view); });
+    works.forEach(function (w) {
+      var hit = state.cat === 'all' || w.getAttribute('data-cat') === state.cat;
+      w.classList.toggle('cat-hidden', !hit);
+    });
+    updateEmpty();
 
     // ---- 初始化 / 响应式重排 ----
     layout();
