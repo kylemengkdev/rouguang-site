@@ -148,25 +148,25 @@
   .album-hint:hover { color:rgba(232,230,225,0.9); }
   .works.open .album-hint { opacity:0; pointer-events:none; }
   .album-close {
-    position:absolute; top:-62px; right:0; z-index:30;
-    font-size:12px; letter-spacing:5px;
-    color:rgba(232,230,225,0.88);
-    border:1px solid rgba(232,230,225,0.3);
-    border-radius:999px;
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    z-index:30; white-space:nowrap;
+    font-size:12px; letter-spacing:4px; font-family:var(--serif);
     padding:10px 22px;
-    background:rgba(16,16,17,0.75);
-    backdrop-filter:blur(6px);
+    border:1px solid rgba(232,230,225,0.32);
+    border-radius:999px;
+    background:rgba(232,230,225,0.03);
+    color:rgba(232,230,225,0.72);
     cursor:pointer;
     opacity:0; pointer-events:none;
-    transition:opacity .5s .35s, border-color .3s, color .3s, background .3s;
+    transition:opacity .45s .2s, border-color .3s, color .3s, background .3s;
   }
-  .album-close::before { content:'×'; margin-right:12px; font-size:15px; color:rgba(232,230,225,0.7); }
-  .album-close:hover { border-color:rgba(232,230,225,0.75); background:rgba(232,230,225,0.09); color:#f2f0eb; }
+  .album-close::before { content:'×'; margin-right:10px; font-size:15px; color:rgba(232,230,225,0.65); }
+  .album-close:hover { border-color:rgba(232,230,225,0.6); background:rgba(232,230,225,0.08); color:#f2f0eb; }
   .album-close:hover::before { color:#f2f0eb; }
-  .works.open .album-close { opacity:1; pointer-events:auto; }
+  .works-toolbar.album-open .album-close { opacity:1; pointer-events:auto; }
 
   /* —— 画册v3：工具栏 + 分类 + 双视图 —— */
-  .works-toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:7vh; }
+  .works-toolbar { position:relative; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:7vh; }
   .works-toolbar .cats, .works-toolbar .views { display:flex; gap:10px; flex-wrap:wrap; }
   .pill {
     font-size:12px; letter-spacing:4px; font-family:var(--serif);
@@ -219,6 +219,8 @@
     nav a { margin-left:18px; }
     .langs { margin-left:18px; }
     .hero h1 { letter-spacing:8px; text-indent:8px; }
+    .album-close { position:static; transform:none; display:none; margin:14px auto 0; }
+    .works-toolbar.album-open .album-close { display:block; }
   }
 </style>
 </head>
@@ -268,13 +270,13 @@
       <button class="pill" data-cat="video"><span lang-switch="zh">视频</span><span lang-switch="en">video</span><span lang-switch="ja">動画</span></button>
       <button class="pill" data-cat="music"><span lang-switch="zh">音乐</span><span lang-switch="en">music</span><span lang-switch="ja">音楽</span></button>
     </div>
+    <div class="album-close" id="albumClose"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
     <div class="views">
       <button class="pill on" data-view="album"><span lang-switch="zh">画册</span><span lang-switch="en">album</span><span lang-switch="ja">画帖</span></button>
       <button class="pill" data-view="grid"><span lang-switch="zh">网格</span><span lang-switch="en">grid</span><span lang-switch="ja">格子</span></button>
     </div>
   </div>
   <div class="works ready" id="worksAlbum">
-    <div class="album-close" id="albumClose"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
     <div class="work" data-cat="photo" data-type="photo">
       <div class="frame"><span class="num">01</span><span>img/1.jpg</span><img src="img/1.jpg" alt="01 — window"></div>
       <div class="meta"><span>window</span><span>decay</span></div>
@@ -413,8 +415,10 @@
       });
       album.style.height = Math.round(maxBottom + 64) + 'px';
     }
+    var toolbar = album.previousElementSibling;
     function toggle(open) {
       album.classList.toggle('open', open);
+      if (toolbar) toolbar.classList.toggle('album-open', open);
       layout();
     }
 
@@ -480,6 +484,7 @@
           album.classList.toggle('grid-view', v === 'grid');
           if (v === 'grid') {
             album.classList.remove('open');
+            if (toolbar) toolbar.classList.remove('album-open');
             works.forEach(function (w) { w.style.transform = ''; w.style.transitionDelay = ''; w.style.removeProperty('--zi'); });
             album.style.height = '';
           } else { layout(); }
