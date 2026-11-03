@@ -421,6 +421,11 @@
       if (toolbar) toolbar.classList.toggle('album-open', open);
       layout();
     }
+    var closeBtn = document.getElementById('albumClose');
+    if (closeBtn) closeBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggle(false);
+    });
 
     // ---- 灯箱 ----
     function src(i) { var v = vis(); var im = v[i] ? v[i].querySelector('img') : null; return im ? im.src : ''; }
