@@ -179,6 +179,8 @@
   .pill.on { background:rgba(232,230,225,0.1); border-color:rgba(232,230,225,0.55); color:#f2f0eb; }
 
   .work.cat-hidden { display:none; }
+  .album-group { margin-bottom:10vh; }
+  .album-title { text-align:center; font-size:12px; letter-spacing:9px; color:var(--bright); margin-bottom:4.5vh; }
   .works-empty { display:none; text-align:center; padding:14vh 0; font-size:12px; letter-spacing:7px; color:var(--dim); }
   .works-empty.show { display:block; }
 
@@ -276,32 +278,35 @@
       <button class="pill" data-view="grid"><span lang-switch="zh">网格</span><span lang-switch="en">grid</span><span lang-switch="ja">格子</span></button>
     </div>
   </div>
-  <div class="works ready" id="worksAlbum">
-    <div class="work" data-cat="photo" data-type="photo">
-      <div class="frame"><span class="num">01</span><span>img/1.jpg</span><img src="img/1.jpg" alt="01 — window"></div>
-      <div class="meta"><span>window</span><span>decay</span></div>
+  <div class="album-group">
+    <div class="album-title">Observation</div>
+    <div class="works ready" data-album>
+      <div class="work" data-cat="photo" data-type="photo">
+        <div class="frame"><span class="num">01</span><span>img/1.jpg</span><img src="img/1.jpg" alt="01"></div>
+      </div>
+      <div class="work" data-cat="photo" data-type="photo">
+        <div class="frame"><span class="num">02</span><span>img/2.jpg</span><img src="img/2.jpg" alt="02"></div>
+      </div>
+      <div class="work" data-cat="photo" data-type="photo">
+        <div class="frame"><span class="num">05</span><span>img/5.jpg</span><img src="img/5.jpg" alt="05"></div>
+      </div>
+      <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
     </div>
-    <div class="work" data-cat="photo" data-type="photo">
-      <div class="frame"><span class="num">02</span><span>img/2.jpg</span><img src="img/2.jpg" alt="02 — bird"></div>
-      <div class="meta"><span>bird</span><span>silence</span></div>
+  </div>
+  <div class="album-group">
+    <div class="album-title">Loose</div>
+    <div class="works ready" data-album>
+      <div class="work" data-cat="photo" data-type="photo">
+        <div class="frame"><span class="num">03</span><span>img/3.jpg</span><img src="img/3.jpg" alt="03"></div>
+      </div>
+      <div class="work" data-cat="photo" data-type="photo">
+        <div class="frame"><span class="num">04</span><span>img/4.jpg</span><img src="img/4.jpg" alt="04"></div>
+      </div>
+      <div class="work" data-cat="photo" data-type="photo">
+        <div class="frame"><span class="num">06</span><span>img/6.jpg</span><img src="img/6.jpg" alt="06"></div>
+      </div>
+      <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
     </div>
-    <div class="work" data-cat="photo" data-type="photo">
-      <div class="frame"><span class="num">03</span><span>img/3.jpg</span><img src="img/3.jpg" alt="03 — still life"></div>
-      <div class="meta"><span>still life</span><span>bloom</span></div>
-    </div>
-    <div class="work" data-cat="photo" data-type="photo">
-      <div class="frame"><span class="num">04</span><span>img/4.jpg</span><img src="img/4.jpg" alt="04 — night blue"></div>
-      <div class="meta"><span>night blue</span><span>passage</span></div>
-    </div>
-    <div class="work" data-cat="photo" data-type="photo">
-      <div class="frame"><span class="num">05</span><span>img/5.jpg</span><img src="img/5.jpg" alt="05 — light study"></div>
-      <div class="meta"><span>light study</span><span>shadow</span></div>
-    </div>
-    <div class="work" data-cat="photo" data-type="photo">
-      <div class="frame"><span class="num">06</span><span>img/6.jpg</span><img src="img/6.jpg" alt="06 — landscape"></div>
-      <div class="meta"><span>landscape</span><span>dusk</span></div>
-    </div>
-    <div class="album-hint" id="albumHint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
   </div>
   <div class="works-empty" id="worksEmpty"><span lang-switch="zh">该分类的作品，还在路上</span><span lang-switch="en">works in this category are on the way</span><span lang-switch="ja">このカテゴリーの作品は、まだ旅途中</span></div>
 </section>
@@ -353,24 +358,19 @@
   // —— 画册开合 + 灯箱（合并模块，故障隔离）——
   try {
   (function () {
-    var album = document.getElementById('worksAlbum');
-    if (!album) throw new Error('worksAlbum missing');
     var lb = document.getElementById('lightbox');
     var img = document.getElementById('lb-img');
     var cap = document.getElementById('lb-cap');
-    var works = Array.from(album.querySelectorAll('.work'));
-    var idx = 0;
+    var toolbar = document.querySelector('.works-toolbar');
+    var closeBtn = document.getElementById('albumClose');
+    var albums = Array.from(document.querySelectorAll('.works[data-album]'));
+    if (!albums.length) throw new Error('no album containers');
     var state = { view: 'album', cat: 'all' };
     try { state.view = localStorage.getItem('rg-view') || 'album'; state.cat = localStorage.getItem('rg-cat') || 'all'; } catch (e) {}
-    function vis() { return works.filter(function (w) { return !w.classList.contains('cat-hidden'); }); }
     function isGrid() { return state.view === 'grid'; }
-    function updateEmpty() {
-      var n = vis().length;
-      document.getElementById('worksEmpty').classList.toggle('show', n === 0);
-      album.style.display = n === 0 ? 'none' : '';
-    }
+    var openAlbum = null;
+    var lbAlbum = null;
 
-    // ---- 布局引擎：合=错位牌堆 / 开=网格罗列 ----
     var STACK = [
       { r: -2.2, dx: 0, dy: 0 },
       { r: 3.4, dx: -7, dy: 5 },
@@ -379,143 +379,183 @@
       { r: -4.2, dx: 8, dy: 17 },
       { r: 3.2, dx: -6, dy: 21 }
     ];
-    function layout() {
-      if (isGrid() || !vis().length) { album.style.height = ''; return; }
-      var open = album.classList.contains('open');
-      var W = album.clientWidth || 800;
-      var cardW = Math.round(Math.min(330, Math.max(210, W * (W >= 980 ? 0.26 : W >= 640 ? 0.38 : 0.8))));
-      album.style.setProperty('--card-w', cardW + 'px');
-      var cardH = works[0] ? works[0].offsetHeight : 360;
-      var cols = W >= 980 ? 3 : W >= 640 ? 2 : 1;
-      var gapX = Math.max(22, Math.round(W * 0.035));
-      var gapY = Math.max(60, Math.round(window.innerHeight * 0.085));
-      var maxBottom = 0;
-      var list = vis();
-      list.forEach(function (w, i) {
-        var x, y, r, d;
+
+    function makeApi(album) {
+      var works = Array.from(album.querySelectorAll('.work'));
+      var group = album.closest('.album-group') || album;
+      function vis() { return works.filter(function (w) { return !w.classList.contains('cat-hidden'); }); }
+      function layout() {
+        if (isGrid() || !vis().length) { album.style.height = ''; return; }
+        var open = album.classList.contains('open');
+        var W = album.clientWidth || 800;
+        var cardW = Math.round(Math.min(330, Math.max(210, W * (W >= 980 ? 0.26 : W >= 640 ? 0.38 : 0.8))));
+        album.style.setProperty('--card-w', cardW + 'px');
+        var first = vis()[0] || works[0];
+        var cardH = first ? first.offsetHeight : 360;
+        var cols = W >= 980 ? 3 : W >= 640 ? 2 : 1;
+        var gapX = Math.max(22, Math.round(W * 0.035));
+        var gapY = Math.max(60, Math.round(window.innerHeight * 0.085));
+        var maxBottom = 0;
+        var list = vis();
+        list.forEach(function (w, i) {
+          var x, y, r, d;
+          if (open) {
+            var c = i % cols, row = Math.floor(i / cols);
+            var cellW = (W - gapX * (cols - 1)) / cols;
+            x = Math.round(c * (cellW + gapX) + (cellW - cardW) / 2);
+            y = row * (cardH + gapY);
+            r = 0;
+            d = i * 65;
+            w.style.setProperty('--zi', 1);
+          } else {
+            var s = STACK[i] || { r: 0, dx: 0, dy: i * 3 };
+            x = Math.round((W - cardW) / 2) + s.dx;
+            y = 16 + s.dy;
+            r = s.r;
+            d = (list.length - 1 - i) * 55;
+            w.style.setProperty('--zi', list.length - i);
+          }
+          w.style.transitionDelay = d + 'ms, 0ms, 0ms, 0ms';
+          w.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + r + 'deg)';
+          maxBottom = Math.max(maxBottom, y + cardH);
+        });
+        album.style.height = Math.round(maxBottom + 64) + 'px';
+      }
+      function toggle(open) {
         if (open) {
-          var c = i % cols, row = Math.floor(i / cols);
-          var cellW = (W - gapX * (cols - 1)) / cols;
-          x = Math.round(c * (cellW + gapX) + (cellW - cardW) / 2);
-          y = row * (cardH + gapY);
-          r = 0;
-          d = i * 65;
-          w.style.setProperty('--zi', 1);
-        } else {
-          var s = STACK[i] || { r: 0, dx: 0, dy: i * 3 };
-          x = Math.round((W - cardW) / 2) + s.dx;
-          y = 16 + s.dy;
-          r = s.r;
-          d = (list.length - 1 - i) * 55;
-          w.style.setProperty('--zi', list.length - i);
-        }
-        w.style.transitionDelay = d + 'ms, 0ms, 0ms, 0ms';
-        w.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + r + 'deg)';
-        maxBottom = Math.max(maxBottom, y + cardH);
+          if (openAlbum && openAlbum !== album) {
+            var prev = apis.find(function (a) { return a.album === openAlbum; });
+            if (prev) prev.toggle(false);
+          }
+          openAlbum = album;
+        } else if (openAlbum === album) { openAlbum = null; }
+        album.classList.toggle('open', open);
+        if (toolbar) toolbar.classList.toggle('album-open', !!openAlbum);
+        layout();
+      }
+      function show(i) {
+        var v = vis(); var n = v.length; if (!n) return;
+        var idx = (i + n) % n;
+        var w = v[idx];
+        var im = w.querySelector('img');
+        img.src = im ? im.src : '';
+        var num = w.querySelector('.num');
+        cap.textContent = (num ? num.textContent : String(idx + 1)) + ' / 0' + n;
+        api._idx = idx;
+      }
+      function showCard(w) {
+        var i = vis().indexOf(w);
+        if (i >= 0) { lbAlbum = api; show(i); lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); }
+      }
+      var api = { album: album, works: works, group: group, vis: vis, layout: layout, toggle: toggle, show: show, showCard: showCard, _idx: 0 };
+      return api;
+    }
+
+    var apis = albums.map(makeApi);
+
+    apis.forEach(function (api) {
+      api.album.addEventListener('click', function (e) {
+        var w = e.target.closest('.work');
+        if (isGrid()) { if (w && !w.classList.contains('cat-hidden')) api.showCard(w); return; }
+        if (!api.album.classList.contains('open')) { api.toggle(true); return; }
+        if (w && !w.classList.contains('cat-hidden')) api.showCard(w);
       });
-      album.style.height = Math.round(maxBottom + 64) + 'px';
-    }
-    var toolbar = album.previousElementSibling;
-    function toggle(open) {
-      album.classList.toggle('open', open);
-      if (toolbar) toolbar.classList.toggle('album-open', open);
-      layout();
-    }
-    var closeBtn = document.getElementById('albumClose');
-    if (closeBtn) closeBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      toggle(false);
     });
 
-    // ---- 灯箱 ----
-    function src(i) { var v = vis(); var im = v[i] ? v[i].querySelector('img') : null; return im ? im.src : ''; }
-    function label(i) { var v = vis(); var m = v[i] ? v[i].querySelector('.meta') : null; return m ? m.innerText.replace(/\n/g, ' · ') : ''; }
-    function show(i) {
-      var n = vis().length; if (!n) return;
-      idx = (i + n) % n;
-      img.src = src(idx); cap.textContent = '0' + (idx + 1) + ' / 0' + n + ' — ' + label(idx);
-    }
-    function showCard(w) { var i = vis().indexOf(w); if (i >= 0) { show(i); lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); } }
-
-    // ---- 委托交互：合上点任意处→展开；展开点卡片→灯箱；收起钮→合上 ----
-    album.addEventListener('click', function (e) {
-      if (e.target.closest('.album-close')) { toggle(false); return; }
-      var w = e.target.closest('.work');
-      if (isGrid()) { if (w && !w.classList.contains('cat-hidden')) showCard(w); return; }
-      if (!album.classList.contains('open')) { toggle(true); return; }
-      if (w && !w.classList.contains('cat-hidden')) showCard(w);
+    if (closeBtn) closeBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (openAlbum) {
+        var cur = apis.find(function (a) { return a.album === openAlbum; });
+        if (cur) cur.toggle(false);
+      }
     });
 
     lb.addEventListener('click', function (e) {
       if (e.target === lb || e.target === img) { lb.classList.remove('on'); lb.setAttribute('aria-hidden', 'true'); }
-      else if (e.target.classList.contains('lb-prev')) { show(idx - 1); }
-      else if (e.target.classList.contains('lb-next')) { show(idx + 1); }
+      else if (e.target.classList.contains('lb-prev')) { if (lbAlbum) lbAlbum.show(lbAlbum._idx - 1); }
+      else if (e.target.classList.contains('lb-next')) { if (lbAlbum) lbAlbum.show(lbAlbum._idx + 1); }
     });
     document.addEventListener('keydown', function (e) {
       if (lb.classList.contains('on')) {
-        if (e.key === 'Escape') { lb.classList.remove('on'); }
-        if (e.key === 'ArrowLeft') { show(idx - 1); }
-        if (e.key === 'ArrowRight') { show(idx + 1); }
+        if (e.key === 'Escape') lb.classList.remove('on');
+        if (e.key === 'ArrowLeft' && lbAlbum) lbAlbum.show(lbAlbum._idx - 1);
+        if (e.key === 'ArrowRight' && lbAlbum) lbAlbum.show(lbAlbum._idx + 1);
         return;
       }
-      if (e.key === 'Escape' && album.classList.contains('open')) { toggle(false); }
+      if (e.key === 'Escape' && openAlbum) {
+        var cur = apis.find(function (a) { return a.album === openAlbum; });
+        if (cur) cur.toggle(false);
+      }
     });
 
-    // ---- 工具栏：分类筛选 ----
+    function updateEmpty() {
+      var total = apis.reduce(function (s, a) { return s + a.vis().length; }, 0);
+      document.getElementById('worksEmpty').classList.toggle('show', total === 0);
+      apis.forEach(function (a) {
+        var n = a.vis().length;
+        a.album.style.display = n === 0 ? 'none' : '';
+        if (a.group !== a.album) a.group.style.display = n === 0 ? 'none' : '';
+      });
+    }
+
     document.querySelectorAll('.pill[data-cat]').forEach(function (b) {
       b.addEventListener('click', function () {
         state.cat = b.getAttribute('data-cat');
         try { localStorage.setItem('rg-cat', state.cat); } catch (e) {}
         document.querySelectorAll('.pill[data-cat]').forEach(function (x) { x.classList.toggle('on', x === b); });
-        works.forEach(function (w) {
-          var hit = state.cat === 'all' || w.getAttribute('data-cat') === state.cat;
-          w.classList.toggle('cat-hidden', !hit);
+        apis.forEach(function (a) {
+          a.works.forEach(function (w) {
+            var hit = state.cat === 'all' || w.getAttribute('data-cat') === state.cat;
+            w.classList.toggle('cat-hidden', !hit);
+          });
         });
         updateEmpty();
-        if (!isGrid()) layout();
+        apis.forEach(function (a) { if (!isGrid()) a.layout(); });
       });
     });
 
-    // ---- 工具栏：视图切换（画册 ↔ 网格）----
     document.querySelectorAll('.pill[data-view]').forEach(function (b) {
       b.addEventListener('click', function () {
         var v = b.getAttribute('data-view');
         if (v === state.view) return;
         state.view = v;
         try { localStorage.setItem('rg-view', v); } catch (e) {}
-        album.classList.add('switching');
+        apis.forEach(function (a) { a.album.classList.add('switching'); });
         setTimeout(function () {
           document.querySelectorAll('.pill[data-view]').forEach(function (x) { x.classList.toggle('on', x === b); });
-          album.classList.toggle('grid-view', v === 'grid');
-          if (v === 'grid') {
-            album.classList.remove('open');
-            if (toolbar) toolbar.classList.remove('album-open');
-            works.forEach(function (w) { w.style.transform = ''; w.style.transitionDelay = ''; w.style.removeProperty('--zi'); });
-            album.style.height = '';
-          } else { layout(); }
+          apis.forEach(function (a) {
+            a.album.classList.toggle('grid-view', v === 'grid');
+            if (v === 'grid') {
+              a.album.classList.remove('open');
+              a.works.forEach(function (w) { w.style.transform = ''; w.style.transitionDelay = ''; w.style.removeProperty('--zi'); });
+              a.album.style.height = '';
+            } else { a.layout(); }
+            a.album.classList.remove('switching');
+          });
+          openAlbum = null;
+          if (toolbar) toolbar.classList.remove('album-open');
           updateEmpty();
-          album.classList.remove('switching');
         }, 170);
       });
     });
 
-    // ---- 状态恢复（分类/视图，用户上次的选择）----
-    if (state.view === 'grid') album.classList.add('grid-view');
+    if (state.view === 'grid') apis.forEach(function (a) { a.album.classList.add('grid-view'); });
     document.querySelectorAll('.pill[data-cat]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-cat') === state.cat); });
     document.querySelectorAll('.pill[data-view]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-view') === state.view); });
-    works.forEach(function (w) {
-      var hit = state.cat === 'all' || w.getAttribute('data-cat') === state.cat;
-      w.classList.toggle('cat-hidden', !hit);
+    apis.forEach(function (a) {
+      a.works.forEach(function (w) {
+        var hit = state.cat === 'all' || w.getAttribute('data-cat') === state.cat;
+        w.classList.toggle('cat-hidden', !hit);
+      });
     });
     updateEmpty();
 
-    // ---- 初始化 / 响应式重排 ----
-    layout();
-    requestAnimationFrame(function () { album.classList.add('ready'); layout(); });
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(layout); }
-    window.addEventListener('load', layout);
+    apis.forEach(function (a) { a.layout(); });
+    requestAnimationFrame(function () { apis.forEach(function (a) { a.album.classList.add('ready'); a.layout(); }); });
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { apis.forEach(function (a) { a.layout(); }); }); }
+    window.addEventListener('load', function () { apis.forEach(function (a) { a.layout(); }); });
     var rt;
-    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(layout, 180); });
+    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { apis.forEach(function (a) { a.layout(); }); }, 180); });
   })();
   } catch (e) { console.warn('album module degraded:', e); }
 
@@ -524,7 +564,7 @@
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
     }, { threshold: 0.12 });
-    document.querySelectorAll('.works, .about p, .contact .line, .panel').forEach(el => el.classList.add('reveal'));
+    document.querySelectorAll('.works, .album-title, .about p, .contact .line, .panel').forEach(el => el.classList.add('reveal'));
   })();
   (function () {
     var root = document.documentElement;
@@ -552,8 +592,8 @@ setTimeout(function () {
     document.body.classList.add('loaded');
     var rl = document.querySelectorAll('.reveal:not(.in)');
     for (var i = 0; i < rl.length; i++) rl[i].classList.add('in');
-    var al = document.getElementById('worksAlbum');
-    if (al) al.classList.add('ready');
+    var als = document.querySelectorAll('.works[data-album]');
+    for (var ai = 0; ai < als.length; ai++) als[ai].classList.add('ready');
   } catch (e) {}
 }, 2600);
 </script>
