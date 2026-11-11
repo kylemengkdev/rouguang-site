@@ -139,10 +139,10 @@
   .frame img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; padding:8%; transition:transform .5s var(--ease-out); }
   .work:hover .frame img { transform:scale(1.03); }
   .work:hover .frame { border-color:rgba(232,230,225,0.2); }
-  .num-row { height:38px; display:flex; align-items:center; justify-content:flex-end; padding:0 2px; }
+  .num-row { height:25px; display:flex; align-items:center; justify-content:flex-end; padding:0 2px; }
   .num-row .num { font-size:11px; letter-spacing:5px; color:rgba(232,230,225,0.52); }
   .frame > span:not(.num) { display:none; }
-  .work .meta { display:flex; justify-content:space-between; align-items:center; padding:30px 3px 30px; margin-top:15px; font-size:11px; letter-spacing:5px; color:rgba(232,230,225,0.62); border-top:1px solid rgba(232,230,225,0.07); }
+  .work .meta { display:flex; justify-content:space-between; align-items:center; padding:17px 3px 17px; margin-top:15px; font-size:11px; letter-spacing:5px; color:rgba(232,230,225,0.62); border-top:1px solid rgba(232,230,225,0.07); }
   .work .meta span:last-child { color:var(--dim); }
 
   .album-hint { position:absolute; left:0; right:0; bottom:-4px; text-align:center; font-size:11px; letter-spacing:6px; color:rgba(232,230,225,0.62); cursor:pointer; transition:opacity .45s, color .3s; padding:16px 0; }
@@ -190,9 +190,7 @@
   .works.grid-view .work { position:static !important; width:100% !important; transform:none !important; padding:9px 9px 0; transition:opacity .35s, border-color .3s, box-shadow .3s !important; }
   .works.grid-view .work:hover { transform:translateY(-4px) !important; border-color:rgba(232,230,225,0.3); box-shadow:0 24px 50px -24px rgba(0,0,0,0.9); }
   .works.grid-view .album-hint, .works.grid-view .album-close { display:none; }
-  .works.grid-view .num-row { height:25px; }
   .works.grid-view .num-row .num { font-size:10px; letter-spacing:4px; }
-  .works.grid-view .work .meta { padding:17px 3px 17px; }
   .works.grid-view .work { padding:0 9px; }
   .works.grid-view .frame img { padding:7%; }
   .works.grid-view .work .meta span:last-child { display:none; }
