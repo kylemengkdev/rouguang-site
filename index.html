@@ -210,15 +210,20 @@
   .contact a:hover { border-color:var(--ink); }
 
   /* —— Music 画册 · 纸质唱片（方向B × 画册卡片融合） —— */
-  .work .frame.mframe { display:grid; place-items:center;
+  .work[data-type="music"] .num-row { display:none; }
+  .work .frame.mframe { display:grid; grid-template-columns:auto 1fr;
     background:#f3efe6; border-color:#e4ddd0; }
   .work .frame.mframe > span { display:block; }
-  .m-glyph { font-size:76px; line-height:1; color:rgba(28,26,23,.2); user-select:none;
+  .m-no { align-self:center; padding:0 24px 0 22px; margin:16px 0;
+    font-family:"EB Garamond",serif; font-weight:500; font-size:88px; line-height:.9;
+    color:#1c1a17; letter-spacing:-.015em; border-right:1px solid #d8d0c0; }
+  .m-glyph { align-self:center; justify-self:center; font-size:54px; line-height:1;
+    color:rgba(28,26,23,.26); user-select:none;
     transition:color .5s cubic-bezier(.23,1,.32,1), transform .5s cubic-bezier(.23,1,.32,1); }
-  .work:hover .m-glyph { color:rgba(28,26,23,.4); transform:scale(1.05); }
-  .m-sub { position:absolute; left:14px; bottom:11px;
+  .work:hover .m-glyph { color:rgba(28,26,23,.46); transform:scale(1.06); }
+  .m-sub { position:absolute; right:14px; bottom:11px;
     font-family:"IBM Plex Mono",ui-monospace,monospace;
-    font-size:9px; letter-spacing:.26em; color:#8a8172; text-transform:uppercase; }
+    font-size:10px; letter-spacing:.24em; color:#6b6355; text-transform:uppercase; }
   .work:hover .frame.mframe { border-color:#d8d0c0; }
 
   .work[data-type="music"] .meta { display:block; padding:0; margin-top:0;
@@ -402,6 +407,7 @@
       <div class="work" data-cat="music" data-type="music" data-src="music/01.m4a" data-dur="03:43">
         <div class="num-row"><span class="num">01</span></div>
         <div class="frame mframe">
+          <span class="m-no">01</span>
           <span class="m-glyph" aria-hidden="true">&#9834;</span>
           <span class="m-sub">Rouguang · Music</span>
         </div>
@@ -649,7 +655,14 @@
       }
     }
     function togglePlay() {
-      if (!audEl.getAttribute('src')) return;
+      if (!audEl.getAttribute('src')) {
+        var w = document.querySelector('.work[data-type="music"]');
+        if (!w) return;
+        audEl.src = w.getAttribute('data-src');
+        var dEl = document.getElementById('lb-dur');
+        if (dEl) dEl.textContent = w.getAttribute('data-dur') || '';
+        paint();
+      }
       if (audEl.paused) { var pr = audEl.play(); if (pr && pr.catch) pr.catch(function () {}); }
       else audEl.pause();
     }
