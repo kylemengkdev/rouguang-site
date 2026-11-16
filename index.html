@@ -385,13 +385,13 @@
   <div class="album-group">
     <div class="album-title">Music</div>
     <div class="works ready" data-album>
-      <div class="work" data-cat="music" data-type="music" data-src="music/01.m4a" data-dur="03:43">
+      <div class="work" data-cat="music" data-type="music" data-src="music/01.m4a" data-dur="03:43" aria-label="平行的风">
         <div class="num-row"><span class="num">01</span></div>
         <div class="frame mframe">
           <span class="m-glyph" aria-hidden="true">&#9834;</span>
           <span class="m-dur">03:43</span>
         </div>
-        <div class="meta"></div>
+        <div class="meta">平行的风</div>
       </div>
     </div>
   </div>
@@ -434,7 +434,7 @@
   <div class="lb-audio" id="lb-audio" aria-hidden="true">
     <div class="slip-no" aria-hidden="true">01</div>
     <div class="slip-head">
-      <div class="slip-ttl">Untitled</div>
+      <div class="slip-ttl">平行的风</div>
       <div class="slip-sub">Rouguang · Music</div>
     </div>
     <div class="lb-seek" id="lb-seek" role="slider" tabindex="0" aria-label="播放进度"
@@ -679,6 +679,24 @@
       }
     });
 
+    // 音乐语境：画册 → 专辑（中/日联动，EN album 两义通用不动）
+    function updateAlbumWord() {
+      var music = state.cat === 'music';
+      var vp = document.querySelector('.pill[data-view="album"]');
+      if (vp) {
+        var vz = vp.querySelector('[lang-switch="zh"]');
+        var vj = vp.querySelector('[lang-switch="ja"]');
+        if (vz) vz.textContent = music ? '专辑' : '画册';
+        if (vj) vj.textContent = music ? 'アルバム' : '画帖';
+      }
+      if (closeBtn) {
+        var cz = closeBtn.querySelector('[lang-switch="zh"]');
+        var cj = closeBtn.querySelector('[lang-switch="ja"]');
+        if (cz) cz.textContent = music ? '收起专辑' : '收起画册';
+        if (cj) cj.textContent = music ? 'アルバムを閉じる' : '画帖を閉じる';
+      }
+    }
+
     function updateEmpty() {
       var total = apis.reduce(function (s, a) { return s + a.vis().length; }, 0);
       document.getElementById('worksEmpty').classList.toggle('show', total === 0);
@@ -702,6 +720,7 @@
         });
         updateEmpty();
         apis.forEach(function (a) { if (!isGrid()) a.layout(); });
+        updateAlbumWord();
       });
     });
 
@@ -732,6 +751,7 @@
 
     if (state.view === 'grid') apis.forEach(function (a) { a.album.classList.add('grid-view'); });
     document.querySelectorAll('.pill[data-cat]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-cat') === state.cat); });
+    updateAlbumWord();
     document.querySelectorAll('.pill[data-view]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-view') === state.view); });
     apis.forEach(function (a) {
       a.works.forEach(function (w) {
