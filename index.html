@@ -268,6 +268,18 @@
     .work:hover .m-glyph { transform:none; }
   }
 
+  /* cult-ui DNA (MIT, nolly-studio/cult-ui): 分层微抬 + 触感按压 */
+  .work .frame { transition: transform .5s var(--ease-out), border-color .5s; }
+  .work:hover .frame { transform: translateY(-4px); }
+  .pill:active { transform: scale(.96); }
+  .album-close:active { transform: translateX(-50%) scale(.96); }
+  .lightbox .lb-nav:active, .lightbox .close:active { transform: scale(.96); }
+  .lb-play:active { transform: scale(.95); }
+  @media (prefers-reduced-motion:reduce){
+    .work:hover .frame { transform:none; }
+    .pill:active, .album-close:active, .lb-nav:active, .close:active { transform:none; }
+  }
+
   footer { padding:60px 5vw; text-align:center; font-size:10px; letter-spacing:4px; color:var(--dim); border-top:1px solid var(--line); }
 
   [lang-switch] { display:none; }
@@ -566,7 +578,28 @@
       }
       function showCard(w) {
         var i = vis().indexOf(w);
-        if (i >= 0) { lbAlbum = api; show(i); lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); }
+        if (i < 0) return;
+        // cult-ui DNA: shared-element expand — 卡片框原位飞入放大
+        var fr = w.querySelector('.frame').getBoundingClientRect();
+        lbAlbum = api;
+        show(i);
+        lb.classList.add('on');
+        lb.setAttribute('aria-hidden', 'false');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var target = w.getAttribute('data-type') === 'music'
+          ? document.getElementById('lb-audio')
+          : document.getElementById('lb-img');
+        requestAnimationFrame(function () {
+          var lr = target.getBoundingClientRect();
+          if (!lr.width || !lr.height) return;
+          var sx = fr.width / lr.width, sy = fr.height / lr.height;
+          var dx = (fr.left + fr.width / 2) - (lr.left + lr.width / 2);
+          var dy = (fr.top + fr.height / 2) - (lr.top + lr.height / 2);
+          target.animate([
+            { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')', opacity: .55 },
+            { transform: 'none', opacity: 1 }
+          ], { duration: 480, easing: 'cubic-bezier(.23,1,.32,1)' });
+        });
       }
       var api = { album: album, works: works, group: group, vis: vis, layout: layout, toggle: toggle, show: show, showCard: showCard, _idx: 0 };
       return api;
