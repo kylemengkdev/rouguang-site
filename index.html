@@ -679,22 +679,34 @@
       }
     });
 
-    // 音乐语境：画册 → 专辑（中/日联动，EN album 两义通用不动）
+    // 分区语境措辞：照片=画册 / 音乐=专辑 / 视频=频道（中日英联动）
     function updateAlbumWord() {
-      var music = state.cat === 'music';
-      var vp = document.querySelector('.pill[data-view="album"]');
-      if (vp) {
-        var vz = vp.querySelector('[lang-switch="zh"]');
-        var vj = vp.querySelector('[lang-switch="ja"]');
-        if (vz) vz.textContent = music ? '专辑' : '画册';
-        if (vj) vj.textContent = music ? 'アルバム' : '画帖';
+      var cat = state.cat;
+      var zh, ja, en;
+      if (cat === 'music') {
+        zh = ['专辑', '收起专辑'];
+        ja = ['アルバム', 'アルバムを閉じる'];
+        en = ['album', 'close album'];
+      } else if (cat === 'video') {
+        zh = ['频道', '收起频道'];
+        ja = ['チャンネル', 'チャンネルを閉じる'];
+        en = ['channel', 'close channel'];
+      } else {
+        zh = ['画册', '收起画册'];
+        ja = ['画帖', '画帖を閉じる'];
+        en = ['album', 'close album'];
       }
-      if (closeBtn) {
-        var cz = closeBtn.querySelector('[lang-switch="zh"]');
-        var cj = closeBtn.querySelector('[lang-switch="ja"]');
-        if (cz) cz.textContent = music ? '收起专辑' : '收起画册';
-        if (cj) cj.textContent = music ? 'アルバムを閉じる' : '画帖を閉じる';
+      function set(el, pair) {
+        if (!el) return;
+        var z = el.querySelector('[lang-switch="zh"]');
+        var j = el.querySelector('[lang-switch="ja"]');
+        var e = el.querySelector('[lang-switch="en"]');
+        if (z) z.textContent = pair[0];
+        if (j) j.textContent = pair[1];
+        if (e) e.textContent = pair[2];
       }
+      set(document.querySelector('.pill[data-view="album"]'), [zh[0], ja[0], en[0]]);
+      set(closeBtn, [zh[1], ja[1], en[1]]);
     }
 
     function updateEmpty() {
