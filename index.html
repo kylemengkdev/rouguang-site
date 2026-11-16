@@ -209,81 +209,62 @@
   .contact a { color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:4px; transition:border-color .4s; }
   .contact a:hover { border-color:var(--ink); }
 
-  /* —— Music 画册 · 纸质唱片（方向B × 画册卡片融合） —— */
-  .work[data-type="music"] .num-row { display:none; }
-  .work .frame.mframe { display:grid; grid-template-columns:auto 1fr;
-    background:#f3efe6; border-color:#e4ddd0; }
+  /* —— Music 画册（方向B：纸片播放器只在灯箱；卡片回归画册原生样） —— */
+  .work .frame.mframe { position:relative; display:flex; align-items:center; justify-content:center; }
   .work .frame.mframe > span { display:block; }
-  .m-no { align-self:center; padding:0 24px 0 22px; margin:16px 0;
-    font-family:"EB Garamond",serif; font-weight:500; font-size:88px; line-height:.9;
-    color:#1c1a17; letter-spacing:-.015em; border-right:1px solid #d8d0c0; }
-  .m-glyph { align-self:center; justify-self:center; font-size:54px; line-height:1;
-    color:rgba(28,26,23,.26); user-select:none;
+  .m-glyph { font-size:54px; line-height:1; color:rgba(232,230,225,.2); user-select:none;
     transition:color .5s cubic-bezier(.23,1,.32,1), transform .5s cubic-bezier(.23,1,.32,1); }
-  .work:hover .m-glyph { color:rgba(28,26,23,.46); transform:scale(1.06); }
-  .m-sub { position:absolute; right:14px; bottom:11px;
-    font-family:"IBM Plex Mono",ui-monospace,monospace;
-    font-size:10px; letter-spacing:.24em; color:#6b6355; text-transform:uppercase; }
-  .work:hover .frame.mframe { border-color:#d8d0c0; }
+  .work:hover .m-glyph { color:rgba(232,230,225,.44); transform:scale(1.06); }
+  .m-dur { position:absolute; right:12px; bottom:10px; font-size:10px; letter-spacing:.2em;
+    color:rgba(232,230,225,.5); font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-variant-numeric:tabular-nums; }
 
-  .work[data-type="music"] .meta { display:block; padding:0; margin-top:0;
-    background:#f3efe6; border:1px solid #e4ddd0; border-top:none; color:#1c1a17;
-    letter-spacing:normal; font-size:11px; }
-  .works.grid-view .work[data-type="music"] .meta { padding:0; }
-  .work[data-type="music"] .meta .p-slip { display:grid; gap:12px; padding:15px 16px 15px; }
-  .work[data-type="music"] .meta .p-times span { color:#6b6355; }
-  .p-rule { position:relative; height:3px; background:#e0d8c8; cursor:pointer; touch-action:none; }
-  .p-rule::after { content:''; position:absolute; left:0; right:0; top:-9px; bottom:-9px; }
-  .p-rule i { position:absolute; left:0; top:0; bottom:0; width:0%; background:#1c1a17;
-    transition:width .2s linear; }
-  .p-rule.dragging i { transition:none; }
-  .p-rule:focus-visible { outline:2px solid rgba(28,26,23,.7); outline-offset:5px; }
-  .p-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-  .p-times { font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px;
-    letter-spacing:.08em; color:#6b6355; font-variant-numeric:tabular-nums; }
-  .p-ctrl { display:flex; gap:8px; align-items:center; }
-  .p-pp { width:34px; height:34px; padding:0; border-radius:50%;
-    background:#1c1a17; color:#f3efe6; border:none; font-size:10px; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    transition:transform 160ms cubic-bezier(.23,1,.32,1), background .2s; }
-  .p-pp:hover { background:#000; }
-  .p-pp:active { transform:scale(.94); }
-  .p-pp span { pointer-events:none; display:block; transform:translateX(1px); }
-  .p-skip { padding:4px; background:none; border:none; color:#8a8172; font-size:13px;
-    line-height:1; cursor:pointer;
-    transition:color .2s, transform 160ms cubic-bezier(.23,1,.32,1); }
-  .p-skip:hover { color:#1c1a17; }
-  .p-skip:active { transform:scale(.92); }
-  .p-skip[hidden] { display:none; }
-
-  .lightbox.on.audio-mode .lb-audio { display:flex;
+  /* 灯箱 · 纸片播放器（方向B原样：活字01 + 框线 + 灌墨线 + 走带） */
+  .lightbox.on.audio-mode .lb-audio { display:grid;
+    grid-template-columns:auto 1fr; column-gap:30px; align-content:start;
+    width:min(660px,88vw); padding:30px 34px 26px;
     background:#f3efe6; border-color:#e4ddd0; color:#1c1a17;
     box-shadow:0 34px 70px -26px rgba(0,0,0,.75); }
-  .lb-audio { display:none; width:min(560px,86vw); align-items:center; gap:24px;
-    padding:26px 30px; border:1px solid var(--line); }
+  .lb-audio { display:none; border:1px solid var(--line); }
   .lightbox.audio-mode #lb-img { display:none; }
-  .lb-play { flex:none; width:56px; height:56px; border-radius:50%;
-    border:1px solid #1c1a17; background:#1c1a17; color:#f3efe6;
-    font-size:13px; cursor:pointer; letter-spacing:-1px;
-    display:flex; align-items:center; justify-content:center;
-    transition:transform 160ms cubic-bezier(.23,1,.32,1), background .2s; }
-  .lb-play:hover { background:#000; }
-  .lb-play:active { transform:scale(.95); }
-  .lb-play-ic { pointer-events:none; display:block; transform:translateX(1px); }
-  .lb-track { flex:1; display:flex; flex-direction:column; gap:11px; min-width:0; }
-  .lb-seek { height:3px; background:#e0d8c8; position:relative; cursor:pointer; touch-action:none; }
+  .lightbox.audio-mode .lb-nav { display:none; }
+  .slip-no { grid-row:1 / 3; align-self:center; padding-right:30px;
+    border-right:1px solid #d8d0c0;
+    font-family:"EB Garamond",serif; font-weight:500; font-size:88px; line-height:.95;
+    color:#1c1a17; letter-spacing:-.015em; }
+  .slip-head { grid-column:2; align-self:center; display:grid; gap:7px; padding:2px 0; }
+  .slip-ttl { font-family:"EB Garamond",serif; font-size:23px; letter-spacing:.05em; color:#1c1a17; }
+  .slip-sub { font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+    letter-spacing:.26em; color:#6b6355; text-transform:uppercase; }
+  .lb-seek { grid-column:1 / 3; height:3px; background:#e0d8c8; position:relative;
+    cursor:pointer; touch-action:none; margin-top:24px; }
   .lb-seek::after { content:''; position:absolute; left:0; right:0; top:-9px; bottom:-9px; }
   .lb-seek-fill { position:absolute; left:0; top:0; bottom:0; width:0%; background:#1c1a17;
     transition:width .2s linear; }
   .lb-seek.dragging .lb-seek-fill { transition:none; }
   .lb-seek:focus-visible { outline:2px solid rgba(28,26,23,.7); outline-offset:5px; }
-  .lb-times { display:flex; justify-content:space-between; font-size:12px; letter-spacing:.1em;
-    color:#6b6355; font-family:"IBM Plex Mono",ui-monospace,monospace;
-    font-variant-numeric:tabular-nums; }
+  .slip-foot { grid-column:1 / 3; display:flex; justify-content:space-between;
+    align-items:center; gap:14px; margin-top:16px; }
+  .lb-times { font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:13px;
+    letter-spacing:.1em; color:#6b6355; font-variant-numeric:tabular-nums; }
+  .slip-ctrl { display:flex; gap:16px; align-items:center; }
+  .lb-play { width:52px; height:52px; padding:0; border-radius:50%;
+    border:1px solid #1c1a17; background:#1c1a17; color:#f3efe6; font-size:13px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:transform 160ms cubic-bezier(.23,1,.32,1), background .2s; }
+  .lb-play:hover { background:#000; }
+  .lb-play:active { transform:scale(.95); }
+  .lb-play-ic { pointer-events:none; display:block; transform:translateX(1px); }
+  .slip-sk { padding:6px; background:none; border:none; color:#8a8172; font-size:15px;
+    line-height:1; cursor:pointer;
+    transition:color .2s, transform 160ms cubic-bezier(.23,1,.32,1); }
+  .slip-sk:not(:disabled):hover { color:#1c1a17; }
+  .slip-sk:not(:disabled):active { transform:scale(.92); }
+  .slip-sk:disabled { color:#c9c1b2; cursor:default; }
 
   @media (prefers-reduced-motion:reduce){
-    .p-rule i, .lb-seek-fill { transition:none; }
-    .p-pp, .p-skip, .lb-play { transition:none; }
+    .lb-seek-fill { transition:none; }
+    .lb-play, .slip-sk { transition:none; }
     .work:hover .m-glyph { transform:none; }
   }
 
@@ -407,24 +388,10 @@
       <div class="work" data-cat="music" data-type="music" data-src="music/01.m4a" data-dur="03:43">
         <div class="num-row"><span class="num">01</span></div>
         <div class="frame mframe">
-          <span class="m-no">01</span>
           <span class="m-glyph" aria-hidden="true">&#9834;</span>
-          <span class="m-sub">Rouguang · Music</span>
+          <span class="m-dur">03:43</span>
         </div>
-        <div class="meta">
-          <div class="p-slip">
-            <div class="p-rule" id="cardSeek" role="slider" tabindex="0"
-                 aria-label="播放进度" aria-valuemin="0" aria-valuemax="223" aria-valuenow="0" aria-valuetext="0:00"><i id="cardFill"></i></div>
-            <div class="p-foot">
-              <span class="p-times"><span id="cardCur">0:00</span> / <span id="cardDur">3:43</span></span>
-              <span class="p-ctrl">
-                <button class="p-skip" id="cardPrev" aria-label="上一首" hidden>&#9198;</button>
-                <button class="p-pp" id="cardPP" aria-label="播放"><span id="cardPPic">&#9654;</span></button>
-                <button class="p-skip" id="cardNext" aria-label="下一首" hidden>&#9197;</button>
-              </span>
-            </div>
-          </div>
-        </div>
+        <div class="meta"></div>
       </div>
     </div>
   </div>
@@ -465,10 +432,20 @@
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <img id="lb-img" src="" alt="">
   <div class="lb-audio" id="lb-audio" aria-hidden="true">
-    <button class="lb-play" id="lb-play" aria-label="播放/暂停"><span class="lb-play-ic" id="lb-play-ic">&#9654;</span></button>
-    <div class="lb-track">
-      <div class="lb-seek" id="lb-seek"><div class="lb-seek-fill" id="lb-seek-fill"></div></div>
-      <div class="lb-times"><span id="lb-cur">00:00</span><span id="lb-dur">03:43</span></div>
+    <div class="slip-no" aria-hidden="true">01</div>
+    <div class="slip-head">
+      <div class="slip-ttl">Untitled</div>
+      <div class="slip-sub">Rouguang · Music</div>
+    </div>
+    <div class="lb-seek" id="lb-seek" role="slider" tabindex="0" aria-label="播放进度"
+         aria-valuemin="0" aria-valuemax="223" aria-valuenow="0"><div class="lb-seek-fill" id="lb-seek-fill"></div></div>
+    <div class="slip-foot">
+      <span class="lb-times"><span id="lb-cur">0:00</span> / <span id="lb-dur">3:43</span></span>
+      <span class="slip-ctrl">
+        <button class="slip-sk" id="lbTPrev" aria-label="上一首" disabled>&#9198;</button>
+        <button class="lb-play" id="lb-play" aria-label="播放"><span class="lb-play-ic" id="lb-play-ic">&#9654;</span></button>
+        <button class="slip-sk" id="lbTNext" aria-label="下一首" disabled>&#9197;</button>
+      </span>
     </div>
     <audio id="lb-aud" preload="metadata"></audio>
   </div>
@@ -619,54 +596,33 @@
       else if (e.target.classList.contains('lb-prev')) { if (lbAlbum) lbAlbum.show(lbAlbum._idx - 1); }
       else if (e.target.classList.contains('lb-next')) { if (lbAlbum) lbAlbum.show(lbAlbum._idx + 1); }
     });
-    // —— 纸片播放器接线（卡片 + 灯箱共用一个音频引擎） ——
+    // —— 纸片播放器接线（方向B：灯箱专属） ——
     var audEl = document.getElementById('lb-aud');
     var playBtn = document.getElementById('lb-play');
     var playIc = document.getElementById('lb-play-ic');
-    var cardPP = document.getElementById('cardPP');
-    var cardPPic = document.getElementById('cardPPic');
-    var cardFill = document.getElementById('cardFill');
-    var cardCur = document.getElementById('cardCur');
-    var cardSeek = document.getElementById('cardSeek');
-    var musicWork = document.querySelector('.work[data-type="music"]');
 
     function setPlayIcon(playing) {
-      var g = playing ? '&#10073;&#10073;' : '&#9654;';
-      playIc.innerHTML = g;
-      if (cardPPic) cardPPic.innerHTML = g;
-      if (cardPP) cardPP.setAttribute('aria-label', playing ? '暂停' : '播放');
-      if (musicWork) musicWork.classList.toggle('playing', playing);
+      playIc.innerHTML = playing ? '&#10073;&#10073;' : '&#9654;';
+      playBtn.setAttribute('aria-label', playing ? '暂停' : '播放');
     }
     function fmtTime(t) { t = Math.floor(t || 0); var m = Math.floor(t / 60), s = t % 60;
       return m + ':' + (s < 10 ? '0' : '') + s; }
     function paint() {
       var d = audEl.duration || 0;
       var pct = d ? (audEl.currentTime / d * 100) : 0;
-      var lbFill = document.getElementById('lb-seek-fill');
-      if (lbFill) lbFill.style.width = pct + '%';
-      if (cardFill) cardFill.style.width = pct + '%';
-      var cur = fmtTime(audEl.currentTime);
-      var lbCur = document.getElementById('lb-cur');
-      if (lbCur) lbCur.textContent = cur;
-      if (cardCur) cardCur.textContent = cur;
-      if (cardSeek) {
-        cardSeek.setAttribute('aria-valuenow', Math.round(audEl.currentTime));
-        cardSeek.setAttribute('aria-valuetext', cur);
+      document.getElementById('lb-seek-fill').style.width = pct + '%';
+      document.getElementById('lb-cur').textContent = fmtTime(audEl.currentTime);
+      var seek = document.getElementById('lb-seek');
+      if (seek) {
+        seek.setAttribute('aria-valuenow', Math.round(audEl.currentTime));
+        seek.setAttribute('aria-valuetext', fmtTime(audEl.currentTime));
       }
     }
     function togglePlay() {
-      if (!audEl.getAttribute('src')) {
-        var w = document.querySelector('.work[data-type="music"]');
-        if (!w) return;
-        audEl.src = w.getAttribute('data-src');
-        var dEl = document.getElementById('lb-dur');
-        if (dEl) dEl.textContent = w.getAttribute('data-dur') || '';
-        paint();
-      }
+      if (!audEl.getAttribute('src')) return;
       if (audEl.paused) { var pr = audEl.play(); if (pr && pr.catch) pr.catch(function () {}); }
       else audEl.pause();
     }
-    if (cardPP) cardPP.addEventListener('click', function (e) { e.stopPropagation(); togglePlay(); });
     playBtn.addEventListener('click', function (e) { e.stopPropagation(); togglePlay(); });
     audEl.addEventListener('play', function () { setPlayIcon(true); });
     audEl.addEventListener('pause', function () { setPlayIcon(false); });
@@ -702,17 +658,12 @@
       });
     }
     bindSeek(document.getElementById('lb-seek'));
-    bindSeek(cardSeek);
 
-    // 多于一首时才出现上/下一首
-    ['cardPrev', 'cardNext'].forEach(function (id) {
-      var b = document.getElementById(id);
-      if (b) b.addEventListener('click', function (e) { e.stopPropagation(); });
-    });
+    // 多于一首时启用灯箱内上/下一首
     if (document.querySelectorAll('.work[data-type="music"]').length > 1) {
-      var pv = document.getElementById('cardPrev'), nx = document.getElementById('cardNext');
-      if (pv) pv.hidden = false;
-      if (nx) nx.hidden = false;
+      var tp = document.getElementById('lbTPrev'), tn = document.getElementById('lbTNext');
+      if (tp) tp.disabled = false;
+      if (tn) tn.disabled = false;
     }
 
     document.addEventListener('keydown', function (e) {
