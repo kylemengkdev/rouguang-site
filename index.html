@@ -7,7 +7,7 @@
 <meta name="description" content="独立摄影 · 没说出口的一切">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0c0d'/%3E%3Ccircle cx='16' cy='13' r='6.5' fill='%23e8e6e1' opacity='0.9'/%3E%3Cellipse cx='16' cy='26' rx='9' ry='2.6' fill='%23e8e6e1' opacity='0.16'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Noto+Serif+JP:wght@300;400&family=Noto+Serif:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Noto+Serif+JP:wght@300;400&family=Noto+Serif:wght@300;400&family=EB+Garamond:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -209,38 +209,78 @@
   .contact a { color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:4px; transition:border-color .4s; }
   .contact a:hover { border-color:var(--ink); }
 
-  /* —— Music 画册 —— */
-  .work .frame.mframe { display:flex; align-items:center; justify-content:center;
-    background:rgba(232,230,225,.03); position:relative; }
-  .m-glyph { font-size:54px; line-height:1; color:rgba(232,230,225,.2); user-select:none;
-    transition:color .5s, transform .5s var(--ease-out); font-family:var(--display,serif); }
-  .work:hover .m-glyph { color:rgba(232,230,225,.44); transform:scale(1.06); }
-  .m-dur { position:absolute; right:12px; bottom:10px; font-size:10px; letter-spacing:.24em;
-    color:var(--dim); font-family:var(--display,serif); font-style:italic; }
-  .work[data-type="music"] .frame span:not(.m-glyph):not(.m-dur) { display:none; }
+  /* —— Music 画册 · 纸质唱片（方向B × 画册卡片融合） —— */
+  .work .frame.mframe { display:grid; place-items:center;
+    background:#f3efe6; border-color:#e4ddd0; }
+  .work .frame.mframe > span { display:block; }
+  .m-glyph { font-size:76px; line-height:1; color:rgba(28,26,23,.2); user-select:none;
+    transition:color .5s cubic-bezier(.23,1,.32,1), transform .5s cubic-bezier(.23,1,.32,1); }
+  .work:hover .m-glyph { color:rgba(28,26,23,.4); transform:scale(1.05); }
+  .m-sub { position:absolute; left:14px; bottom:11px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:9px; letter-spacing:.26em; color:#8a8172; text-transform:uppercase; }
+  .work:hover .frame.mframe { border-color:#d8d0c0; }
 
-  /* —— 灯箱音频播放器 —— */
-  .lb-audio { display:none; width:min(560px,86vw); align-items:center; gap:24px;
-    padding:28px 32px; border:1px solid var(--line);
-    background:rgba(232,230,225,.03); backdrop-filter:blur(4px); }
-  .lightbox.on.audio-mode .lb-audio { display:flex; }
-  .lightbox.audio-mode #lb-img { display:none; }
-  .lb-play { flex:none; width:58px; height:58px; border-radius:50%;
-    border:1px solid rgba(232,230,225,.45); background:none;
-    color:var(--ink); font-size:15px; cursor:pointer; letter-spacing:-2px;
+  .work[data-type="music"] .meta { display:block; padding:0; margin-top:0;
+    background:#f3efe6; border:1px solid #e4ddd0; border-top:none; color:#1c1a17;
+    letter-spacing:normal; font-size:11px; }
+  .works.grid-view .work[data-type="music"] .meta { padding:0; }
+  .work[data-type="music"] .meta .p-slip { display:grid; gap:12px; padding:15px 16px 15px; }
+  .work[data-type="music"] .meta .p-times span { color:#6b6355; }
+  .p-rule { position:relative; height:3px; background:#e0d8c8; cursor:pointer; touch-action:none; }
+  .p-rule::after { content:''; position:absolute; left:0; right:0; top:-9px; bottom:-9px; }
+  .p-rule i { position:absolute; left:0; top:0; bottom:0; width:0%; background:#1c1a17;
+    transition:width .2s linear; }
+  .p-rule.dragging i { transition:none; }
+  .p-rule:focus-visible { outline:2px solid rgba(28,26,23,.7); outline-offset:5px; }
+  .p-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .p-times { font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px;
+    letter-spacing:.08em; color:#6b6355; font-variant-numeric:tabular-nums; }
+  .p-ctrl { display:flex; gap:8px; align-items:center; }
+  .p-pp { width:34px; height:34px; padding:0; border-radius:50%;
+    background:#1c1a17; color:#f3efe6; border:none; font-size:10px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    transition:border-color .3s, background .3s, transform .2s; }
-  .lb-play:hover { border-color:rgba(232,230,225,.85); background:rgba(232,230,225,.07); }
+    transition:transform 160ms cubic-bezier(.23,1,.32,1), background .2s; }
+  .p-pp:hover { background:#000; }
+  .p-pp:active { transform:scale(.94); }
+  .p-pp span { pointer-events:none; display:block; transform:translateX(1px); }
+  .p-skip { padding:4px; background:none; border:none; color:#8a8172; font-size:13px;
+    line-height:1; cursor:pointer;
+    transition:color .2s, transform 160ms cubic-bezier(.23,1,.32,1); }
+  .p-skip:hover { color:#1c1a17; }
+  .p-skip:active { transform:scale(.92); }
+  .p-skip[hidden] { display:none; }
+
+  .lightbox.on.audio-mode .lb-audio { display:flex;
+    background:#f3efe6; border-color:#e4ddd0; color:#1c1a17;
+    box-shadow:0 34px 70px -26px rgba(0,0,0,.75); }
+  .lb-audio { display:none; width:min(560px,86vw); align-items:center; gap:24px;
+    padding:26px 30px; border:1px solid var(--line); }
+  .lightbox.audio-mode #lb-img { display:none; }
+  .lb-play { flex:none; width:56px; height:56px; border-radius:50%;
+    border:1px solid #1c1a17; background:#1c1a17; color:#f3efe6;
+    font-size:13px; cursor:pointer; letter-spacing:-1px;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform 160ms cubic-bezier(.23,1,.32,1), background .2s; }
+  .lb-play:hover { background:#000; }
   .lb-play:active { transform:scale(.95); }
   .lb-play-ic { pointer-events:none; display:block; transform:translateX(1px); }
-  .lb-track { flex:1; display:flex; flex-direction:column; gap:12px; min-width:0; }
-  .lb-seek { height:1px; background:var(--line); position:relative; cursor:pointer; }
-  .lb-seek::after { content:''; position:absolute; left:0; right:0; top:-7px; bottom:-7px; }
-  .lb-seek-fill { position:absolute; left:0; top:0; bottom:0; width:0%;
-    background:var(--ink); transition:width .18s linear; }
-  .lb-times { display:flex; justify-content:space-between;
-    font-size:10px; letter-spacing:.24em; color:var(--dim);
-    font-family:var(--display,serif); font-style:italic; }
+  .lb-track { flex:1; display:flex; flex-direction:column; gap:11px; min-width:0; }
+  .lb-seek { height:3px; background:#e0d8c8; position:relative; cursor:pointer; touch-action:none; }
+  .lb-seek::after { content:''; position:absolute; left:0; right:0; top:-9px; bottom:-9px; }
+  .lb-seek-fill { position:absolute; left:0; top:0; bottom:0; width:0%; background:#1c1a17;
+    transition:width .2s linear; }
+  .lb-seek.dragging .lb-seek-fill { transition:none; }
+  .lb-seek:focus-visible { outline:2px solid rgba(28,26,23,.7); outline-offset:5px; }
+  .lb-times { display:flex; justify-content:space-between; font-size:12px; letter-spacing:.1em;
+    color:#6b6355; font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-variant-numeric:tabular-nums; }
+
+  @media (prefers-reduced-motion:reduce){
+    .p-rule i, .lb-seek-fill { transition:none; }
+    .p-pp, .p-skip, .lb-play { transition:none; }
+    .work:hover .m-glyph { transform:none; }
+  }
 
   footer { padding:60px 5vw; text-align:center; font-size:10px; letter-spacing:4px; color:var(--dim); border-top:1px solid var(--line); }
 
@@ -363,9 +403,22 @@
         <div class="num-row"><span class="num">01</span></div>
         <div class="frame mframe">
           <span class="m-glyph" aria-hidden="true">&#9834;</span>
-          <span class="m-dur">03:43</span>
+          <span class="m-sub">Rouguang · Music</span>
         </div>
-        <div class="meta"></div>
+        <div class="meta">
+          <div class="p-slip">
+            <div class="p-rule" id="cardSeek" role="slider" tabindex="0"
+                 aria-label="播放进度" aria-valuemin="0" aria-valuemax="223" aria-valuenow="0" aria-valuetext="0:00"><i id="cardFill"></i></div>
+            <div class="p-foot">
+              <span class="p-times"><span id="cardCur">0:00</span> / <span id="cardDur">3:43</span></span>
+              <span class="p-ctrl">
+                <button class="p-skip" id="cardPrev" aria-label="上一首" hidden>&#9198;</button>
+                <button class="p-pp" id="cardPP" aria-label="播放"><span id="cardPPic">&#9654;</span></button>
+                <button class="p-skip" id="cardNext" aria-label="下一首" hidden>&#9197;</button>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -517,9 +570,8 @@
           img.src = '';
           audEl.src = w.getAttribute('data-src');
           document.getElementById('lb-dur').textContent = w.getAttribute('data-dur') || '';
-          document.getElementById('lb-cur').textContent = '00:00';
-          document.getElementById('lb-seek-fill').style.width = '0%';
           setPlayIcon(false);
+          paint();
           var pr = audEl.play();
           if (pr && pr.catch) pr.catch(function () {});
         } else {
@@ -561,33 +613,94 @@
       else if (e.target.classList.contains('lb-prev')) { if (lbAlbum) lbAlbum.show(lbAlbum._idx - 1); }
       else if (e.target.classList.contains('lb-next')) { if (lbAlbum) lbAlbum.show(lbAlbum._idx + 1); }
     });
-    // —— 音频播放器接线 ——
+    // —— 纸片播放器接线（卡片 + 灯箱共用一个音频引擎） ——
     var audEl = document.getElementById('lb-aud');
     var playBtn = document.getElementById('lb-play');
     var playIc = document.getElementById('lb-play-ic');
-    function setPlayIcon(playing) { playIc.innerHTML = playing ? '&#10073;&#10073;' : '&#9654;'; }
+    var cardPP = document.getElementById('cardPP');
+    var cardPPic = document.getElementById('cardPPic');
+    var cardFill = document.getElementById('cardFill');
+    var cardCur = document.getElementById('cardCur');
+    var cardSeek = document.getElementById('cardSeek');
+    var musicWork = document.querySelector('.work[data-type="music"]');
+
+    function setPlayIcon(playing) {
+      var g = playing ? '&#10073;&#10073;' : '&#9654;';
+      playIc.innerHTML = g;
+      if (cardPPic) cardPPic.innerHTML = g;
+      if (cardPP) cardPP.setAttribute('aria-label', playing ? '暂停' : '播放');
+      if (musicWork) musicWork.classList.toggle('playing', playing);
+    }
     function fmtTime(t) { t = Math.floor(t || 0); var m = Math.floor(t / 60), s = t % 60;
-      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s; }
-    playBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
+      return m + ':' + (s < 10 ? '0' : '') + s; }
+    function paint() {
+      var d = audEl.duration || 0;
+      var pct = d ? (audEl.currentTime / d * 100) : 0;
+      var lbFill = document.getElementById('lb-seek-fill');
+      if (lbFill) lbFill.style.width = pct + '%';
+      if (cardFill) cardFill.style.width = pct + '%';
+      var cur = fmtTime(audEl.currentTime);
+      var lbCur = document.getElementById('lb-cur');
+      if (lbCur) lbCur.textContent = cur;
+      if (cardCur) cardCur.textContent = cur;
+      if (cardSeek) {
+        cardSeek.setAttribute('aria-valuenow', Math.round(audEl.currentTime));
+        cardSeek.setAttribute('aria-valuetext', cur);
+      }
+    }
+    function togglePlay() {
       if (!audEl.getAttribute('src')) return;
       if (audEl.paused) { var pr = audEl.play(); if (pr && pr.catch) pr.catch(function () {}); }
       else audEl.pause();
-    });
+    }
+    if (cardPP) cardPP.addEventListener('click', function (e) { e.stopPropagation(); togglePlay(); });
+    playBtn.addEventListener('click', function (e) { e.stopPropagation(); togglePlay(); });
     audEl.addEventListener('play', function () { setPlayIcon(true); });
     audEl.addEventListener('pause', function () { setPlayIcon(false); });
     audEl.addEventListener('ended', function () { setPlayIcon(false); });
-    audEl.addEventListener('timeupdate', function () {
-      var d = audEl.duration || 0;
-      document.getElementById('lb-seek-fill').style.width = (d ? (audEl.currentTime / d * 100) : 0) + '%';
-      document.getElementById('lb-cur').textContent = fmtTime(audEl.currentTime);
+    audEl.addEventListener('timeupdate', paint);
+    audEl.addEventListener('loadedmetadata', paint);
+
+    // 进度条：pointer capture 1:1 跟手，按下即 seek
+    function bindSeek(el) {
+      if (!el) return;
+      el.addEventListener('click', function (e) { e.stopPropagation(); });
+      var dragging = false;
+      function setFrom(x) {
+        var r = el.getBoundingClientRect();
+        var ratio = Math.min(1, Math.max(0, (x - r.left) / r.width));
+        if (audEl.duration) { audEl.currentTime = ratio * audEl.duration; paint(); }
+      }
+      el.addEventListener('pointerdown', function (e) {
+        e.stopPropagation(); e.preventDefault();
+        dragging = true; el.classList.add('dragging');
+        try { el.setPointerCapture(e.pointerId); } catch (err) {}
+        setFrom(e.clientX);
+      });
+      el.addEventListener('pointermove', function (e) { if (dragging) setFrom(e.clientX); });
+      function end() { if (!dragging) return; dragging = false; el.classList.remove('dragging'); }
+      el.addEventListener('pointerup', end);
+      el.addEventListener('pointercancel', end);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); e.stopPropagation();
+          audEl.currentTime = Math.max(0, audEl.currentTime - 5); paint(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); e.stopPropagation();
+          audEl.currentTime = Math.min(audEl.duration || 0, audEl.currentTime + 5); paint(); }
+      });
+    }
+    bindSeek(document.getElementById('lb-seek'));
+    bindSeek(cardSeek);
+
+    // 多于一首时才出现上/下一首
+    ['cardPrev', 'cardNext'].forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) b.addEventListener('click', function (e) { e.stopPropagation(); });
     });
-    document.getElementById('lb-seek').addEventListener('click', function (e) {
-      e.stopPropagation();
-      var r = this.getBoundingClientRect();
-      var ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
-      if (audEl.duration) audEl.currentTime = ratio * audEl.duration;
-    });
+    if (document.querySelectorAll('.work[data-type="music"]').length > 1) {
+      var pv = document.getElementById('cardPrev'), nx = document.getElementById('cardNext');
+      if (pv) pv.hidden = false;
+      if (nx) nx.hidden = false;
+    }
 
     document.addEventListener('keydown', function (e) {
       if (lb.classList.contains('on')) {

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设计方向预览 — 音乐板块播放器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=EB+Garamond:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============ 壳：中性克制 ============ */
+  body{margin:0;font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f4f2;color:#1a1a1a}
+  .bar{padding:18px 32px;border-bottom:1px solid #ddd;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline}
+  .bar strong{font-size:15px}
+  .bar span{font-size:12px;color:#777}
+  .dials{display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:16px;padding:18px 32px;border-bottom:1px solid #ddd}
+  .dial{display:grid;gap:6px;font-size:13px}
+  .dial b{font-weight:650}
+  .dial output{font-variant-numeric:tabular-nums;color:#555;margin-left:6px}
+  .dial input{width:100%}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;padding:32px}
+  .card{background:#fff;border:2px solid #e2e2e0;border-radius:12px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;min-width:0;position:relative}
+  .card.selected{border-color:#1a1a1a}
+  .card[data-rec]::after{content:'推荐';position:absolute;top:12px;right:12px;background:#1a1a1a;color:#fff;font-size:11px;padding:3px 10px;border-radius:99px;z-index:3}
+  .mock{height:300px;overflow:hidden;position:relative;background:#0b0b0c}
+  .mock>.stage{width:960px;height:600px;transform:scale(.5);transform-origin:top left;position:absolute;left:50%;top:50%;margin:-300px 0 0 -480px}
+  .stage-tag{position:absolute;top:10px;left:12px;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.34);z-index:4;pointer-events:none}
+  .meta{padding:16px 20px;display:grid;gap:10px;min-width:0;width:100%;box-sizing:border-box;background:#fff}
+  .meta .row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .meta h3{margin:0;font-size:16px}
+  .meta .tag{font-size:11px;color:#888;letter-spacing:.1em}
+  .meta p{margin:0;max-width:64ch;font-size:13px;color:#555;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;writing-mode:horizontal-tb;white-space:normal;overflow-wrap:break-word;line-height:1.55}
+  .qmdp-pick-button{position:relative;z-index:1;width:calc(100% - 40px);min-height:44px;margin:0 20px 20px;
+    background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;
+    writing-mode:horizontal-tb;white-space:normal;font-family:inherit}
+  .qmdp-pick-button:hover{background:#333}
+  .explain{padding:8px 32px 40px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  .explain .x{background:#fff;border:1px solid #e2e2e0;border-radius:12px;padding:18px 22px}
+  .explain h4{margin:0 0 8px;font-size:14px}
+  .explain p{margin:4px 0;font-size:13px;color:#555;line-height:1.6}
+  .explain .k{color:#999;font-size:12px}
+  .note{padding:0 32px 30px;font-size:12px;color:#888}
+  .confirm{position:fixed;inset:0;display:none;place-items:center;background:rgb(0 0 0 / 32%);z-index:20}
+  .confirm.open{display:grid}
+  .dialog{width:min(520px,calc(100vw - 32px));background:#fff;border-radius:12px;padding:22px}
+  .dialog h2{margin:0 0 8px;font-size:17px}
+  .dialog p{margin:0 0 12px;font-size:13px;color:#555}
+  .dialog textarea{width:100%;min-height:84px;resize:vertical;box-sizing:border-box;font-family:inherit;font-size:13px;padding:10px;border:1px solid #ddd;border-radius:8px}
+  .dialog .btns{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+  .dialog button{padding:9px 18px;border-radius:8px;font-size:14px;cursor:pointer;border:1px solid #ddd;background:#fff;font-family:inherit}
+  .dialog button#confirmPick{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+  .pickbar{position:fixed;bottom:0;left:0;right:0;padding:14px;background:#1a1a1a;color:#fff;text-align:center;font-size:14px;
+    transform:translateY(100%);transition:transform 200ms cubic-bezier(.23,1,.32,1);z-index:30}
+  .pickbar.show{transform:translateY(0)}
+  @media (max-width:760px){
+    .bar{padding:16px;gap:10px}
+    .dials{grid-template-columns:1fr;padding:16px}
+    .grid{grid-template-columns:1fr;padding:16px}
+    .explain{grid-template-columns:1fr;padding:8px 16px 30px}
+  }
+
+  /* ============ A · 发丝编辑（Linear+站点DNA：暗/衬线/平面/横条） ============ */
+  .dir-a .lb{position:absolute;inset:0;background:#0c0c0d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
+  .dir-a .pl{display:flex;align-items:center;gap:28px;width:640px;padding:30px 34px;
+    border:1px solid rgba(232,230,225,.14);background:rgba(232,230,225,.028)}
+  .dir-a .pbtn{width:64px;height:64px;border-radius:50%;border:1px solid rgba(232,230,225,.55);background:none;
+    color:#e8e6e1;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+  .dir-a .pbtn span{transform:translateX(2px)}
+  .dir-a .mid{flex:1;display:grid;gap:13px;min-width:0}
+  .dir-a .line{position:relative;height:1px;background:rgba(232,230,225,.16)}
+  .dir-a .line i{position:absolute;left:0;top:0;bottom:0;width:32%;background:rgba(232,230,225,.85)}
+  .dir-a .line b{position:absolute;left:32%;top:50%;width:7px;height:7px;border-radius:50%;background:#fff;
+    transform:translate(-50%,-50%);box-shadow:0 0 12px rgba(255,255,255,.55)}
+  .dir-a .t{display:flex;justify-content:space-between;font-family:"Cormorant Garamond",serif;font-size:17px;
+    letter-spacing:.14em;color:#b0aea8;font-variant-numeric:tabular-nums}
+  .dir-a .cap{font-family:"Cormorant Garamond",serif;font-size:15px;letter-spacing:.3em;color:rgba(232,230,225,.4)}
+
+  /* ============ B · 纸质唱片（Notion暖纸+印刷时代：亮/衬线+等宽/纸质/左编号） ============ */
+  .dir-b .lb{position:absolute;inset:0;background:#0c0c0d;display:flex;align-items:center;justify-content:center}
+  .dir-b .slip{width:660px;background:#f3efe6;color:#1c1a17;padding:34px 38px 30px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.7);display:grid;grid-template-columns:auto 1fr;gap:8px 34px;
+    border:1px solid #e4ddd0}
+  .dir-b .no{grid-row:1/3;font-family:"EB Garamond",serif;font-size:96px;line-height:.9;color:#1c1a17;
+    border-right:1px solid #cfc6b4;padding-right:30px;letter-spacing:-.02em}
+  .dir-b .ttl{font-family:"EB Garamond",serif;font-size:21px;letter-spacing:.06em;align-self:end}
+  .dir-b .sub{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;color:#6b6355;text-transform:uppercase}
+  .dir-b .rule{grid-column:1/3;position:relative;height:3px;background:#e0d8c8;margin-top:20px}
+  .dir-b .rule i{position:absolute;left:0;top:0;bottom:0;width:32%;background:#1c1a17}
+  .dir-b .foot{grid-column:1/3;display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+  .dir-b .times{font-family:"IBM Plex Mono",monospace;font-size:15px;letter-spacing:.1em;font-variant-numeric:tabular-nums}
+  .dir-b .ctrl{display:flex;gap:14px;align-items:center}
+  .dir-b .pp{width:46px;height:46px;border-radius:50%;background:#1c1a17;color:#f3efe6;border:none;font-size:14px;cursor:pointer}
+  .dir-b .sk{background:none;border:none;font-family:"IBM Plex Mono",monospace;font-size:16px;color:#1c1a17;cursor:pointer}
+
+  /* ============ C · 黑胶仪表（Apple奢华暗+HiFi拟物：暗暖/等宽/拟物/圆） ============ */
+  .dir-c .lb{position:absolute;inset:0;background:#12100d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+  .dir-c .deck{position:relative;width:300px;height:300px}
+  .dir-c .disc{position:absolute;inset:26px;border-radius:50%;
+    background:repeating-radial-gradient(circle at 50% 50%,#1b1815 0 2px,#221e1a 2px 4px);
+    border:1px solid rgba(217,164,65,.28);animation:spin 14s linear infinite}
+  .dir-c .disc::after{content:'';position:absolute;inset:36%;border-radius:50%;background:#d9a441;opacity:.92}
+  .dir-c .disc::before{content:'';position:absolute;inset:47.5%;border-radius:50%;background:#12100d;z-index:2}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .dir-c .arc{position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(#d9a441 0 32%,rgba(217,164,65,.14) 32% 100%);
+    -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+    mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px))}
+  .dir-c .vu{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);display:flex;gap:3px;align-items:flex-end;height:22px}
+  .dir-c .vu i{width:4px;background:rgba(217,164,65,.75);display:block}
+  .dir-c .vu i:nth-child(1){height:9px}.dir-c .vu i:nth-child(2){height:17px}
+  .dir-c .vu i:nth-child(3){height:12px}.dir-c .vu i:nth-child(4){height:20px}
+  .dir-c .vu i:nth-child(5){height:8px}.dir-c .vu i:nth-child(6){height:14px}
+  .dir-c .transport{display:flex;gap:26px;align-items:center}
+  .dir-c .tb{background:none;border:none;color:#cfc8bd;font-size:19px;cursor:pointer;font-family:"IBM Plex Mono",monospace}
+  .dir-c .tb.main{width:58px;height:58px;border-radius:50%;border:1px solid rgba(217,164,65,.65);color:#d9a441;font-size:17px}
+  .dir-c .times{font-family:"IBM Plex Mono",monospace;font-size:15px;letter-spacing:.16em;color:#a89e8f;
+    font-variant-numeric:tabular-nums}
+  .dir-c .times b{color:#d9a441;font-weight:500}
+
+  /* ============ D · 玻璃声波（Vercel精确+玻璃：暗冷/无衬线/玻璃/胶囊波形） ============ */
+  .dir-d .lb{position:absolute;inset:0;background:#08080a;display:flex;align-items:center;justify-content:center}
+  .dir-d .pill{display:flex;align-items:center;gap:22px;padding:20px 26px;border-radius:999px;
+    background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.14);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 24px 50px -18px rgba(0,0,0,.8);backdrop-filter:blur(8px)}
+  .dir-d .pbtn{width:52px;height:52px;border-radius:50%;background:#fff;color:#0a0a0c;border:none;
+    font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+  .dir-d .wave{display:flex;align-items:center;gap:3px;height:44px}
+  .dir-d .wave i{width:3px;border-radius:2px;background:rgba(255,255,255,.22);display:block}
+  .dir-d .wave i.on{background:#fff}
+  .dir-d .wave i:nth-child(4n+1){height:16px}.dir-d .wave i:nth-child(4n+2){height:34px}
+  .dir-d .wave i:nth-child(4n+3){height:24px}.dir-d .wave i:nth-child(4n){height:40px}
+  .dir-d .wave i:nth-child(7n){height:12px}
+  .dir-d .times{font-family:Inter,system-ui,sans-serif;font-size:14px;letter-spacing:.06em;color:rgba(255,255,255,.72);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  .dir-d .vol{display:flex;align-items:center;gap:8px;padding-left:16px;border-left:1px solid rgba(255,255,255,.16)}
+  .dir-d .vol span{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.14em}
+  .dir-d .vtrack{width:56px;height:3px;border-radius:2px;background:rgba(255,255,255,.18);position:relative}
+  .dir-d .vtrack i{position:absolute;left:0;top:0;bottom:0;width:70%;border-radius:2px;background:#fff}
+  @media (prefers-reduced-motion:reduce){.dir-c .disc{animation:none}}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <strong>音乐板块播放器 · 方向样机</strong>
+    <span>这是设计方向样机，不是最终播放器 · 键盘 1-4 选择 · 确认后回传</span>
+  </div>
+
+  <div class="dials" data-qmdp-dials aria-label="设计拨盘">
+    <label class="dial"><b>视觉冒险度 <output id="varianceOut" data-qmdp-output="variance">5</output></b>
+      <input id="variance" data-qmdp-dial="variance" type="range" min="1" max="10" value="5"></label>
+    <label class="dial"><b>动效强度 <output id="motionOut" data-qmdp-output="motion">5</output></b>
+      <input id="motion" data-qmdp-dial="motion" type="range" min="1" max="10" value="5"></label>
+    <label class="dial"><b>信息密度 <output id="densityOut" data-qmdp-output="density">3</output></b>
+      <input id="density" data-qmdp-dial="density" type="range" min="1" max="10" value="3"></label>
+  </div>
+
+  <div class="grid">
+
+    <!-- A -->
+    <div class="card" data-rec data-dir="A">
+      <div class="mock"><span class="stage-tag">方向样机</span>
+        <div class="stage dir-a">
+          <div class="lb">
+            <div class="pl">
+              <button class="pbtn" aria-label="播放"><span>▶</span></button>
+              <div class="mid">
+                <div class="line"><i></i><b></b></div>
+                <div class="t"><span>1:12</span><span>3:43</span></div>
+              </div>
+            </div>
+            <div class="cap">01 / 01</div>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="row"><h3>发丝编辑</h3><span class="tag">暗 · 衬线 · 平面 · 横条</span></div>
+        <p>像画廊墙签：1px 发丝进度条 + 发光播放头，衬线等宽数字，与网站暗夜宋体一体。</p>
+        <button class="qmdp-pick-button">选择 A · 发丝编辑</button>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="card" data-dir="B">
+      <div class="mock"><span class="stage-tag">方向样机</span>
+        <div class="stage dir-b">
+          <div class="lb">
+            <div class="slip">
+              <div class="no">01</div>
+              <div class="ttl">Untitled</div>
+              <div class="sub">Rouguang · Music</div>
+              <div class="rule"><i></i></div>
+              <div class="foot">
+                <span class="times">1:12 / 3:43</span>
+                <span class="ctrl">
+                  <button class="sk" aria-label="上一首">⏮</button>
+                  <button class="pp" aria-label="暂停">❚❚</button>
+                  <button class="sk" aria-label="下一首">⏭</button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="row"><h3>纸质唱片</h3><span class="tag">亮 · 衬线+等宽 · 纸质 · 左编号</span></div>
+        <p>像 LP 封底：奶油纸卡浮在暗底上，巨号活字编号，进度是一条灌墨的印刷线。</p>
+        <button class="qmdp-pick-button">选择 B · 纸质唱片</button>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="card" data-dir="C">
+      <div class="mock"><span class="stage-tag">方向样机</span>
+        <div class="stage dir-c">
+          <div class="lb">
+            <div class="deck">
+              <div class="arc"></div>
+              <div class="disc"></div>
+              <div class="vu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="transport">
+              <button class="tb" aria-label="上一首">⏮</button>
+              <button class="tb main" aria-label="暂停">❚❚</button>
+              <button class="tb" aria-label="下一首">⏭</button>
+            </div>
+            <div class="times"><b>1:12</b> / 3:43</div>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="row"><h3>黑胶仪表</h3><span class="tag">暗暖 · 等宽 · 拟物 · 圆</span></div>
+        <p>像70年代 HiFi 面板：旋转唱片即进度，琥珀色环形弧 + 等宽字 + 迷你 VU 条。</p>
+        <button class="qmdp-pick-button">选择 C · 黑胶仪表</button>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="card" data-dir="D">
+      <div class="mock"><span class="stage-tag">方向样机</span>
+        <div class="stage dir-d">
+          <div class="lb">
+            <div class="pill">
+              <button class="pbtn" aria-label="播放">▶</button>
+              <div class="wave">
+                <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+                <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+                <i class="on"></i><i class="on"></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+              <span class="times">1:12 / 3:43</span>
+              <span class="vol"><span>VOL</span><span class="vtrack"><i></i></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="row"><h3>玻璃声波</h3><span class="tag">暗冷 · 无衬线 · 玻璃 · 胶囊</span></div>
+        <p>像当代播放器：磨砂玻璃胶囊里一条实时声波，播过的柱亮起，右侧带音量。</p>
+        <button class="qmdp-pick-button">选择 D · 玻璃声波</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="explain">
+    <div class="x"><h4>A · 发丝编辑（推荐）</h4>
+      <p><span class="k">气质</span> 画廊墙签，克制的编辑式极简</p>
+      <p><span class="k">字体</span> Cormorant Garamond 数字 + 系统中文栈</p>
+      <p><span class="k">色彩</span> #0c0c0d 暗底 + 米白重音，零彩度</p>
+      <p><span class="k">记忆点</span> 发丝进度上的小发光播放头</p>
+      <p><span class="k">推荐理由</span> 与网站既有暗夜宋体 DNA 同源，访客在画廊语境里零打断，实现最稳。</p></div>
+    <div class="x"><h4>B · 纸质唱片</h4>
+      <p><span class="k">气质</span> 唱片封底 / 活字印刷</p>
+      <p><span class="k">字体</span> EB Garamond + IBM Plex Mono</p>
+      <p><span class="k">色彩</span> 奶油纸 #f3efe6 + 墨黑，明度轴翻转</p>
+      <p><span class="k">记忆点</span> 会灌墨的印刷线 + 巨号编号</p>
+      <p><span class="k">适用</span> 想让播放器成为暗站里一块"实物"时。</p></div>
+    <div class="x"><h4>C · 黑胶仪表</h4>
+      <p><span class="k">气质</span> 70年代 HiFi 面板</p>
+      <p><span class="k">字体</span> IBM Plex Mono 全等宽</p>
+      <p><span class="k">色彩</span> 暖黑 + 琥珀金 #d9a441</p>
+      <p><span class="k">记忆点</span> 转着的唱片与环形进度弧</p>
+      <p><span class="k">适用</span> 想要拟物温度与最强记忆点；动效强度需调高。</p></div>
+    <div class="x"><h4>D · 玻璃声波</h4>
+      <p><span class="k">气质</span> 当代 App 播放条</p>
+      <p><span class="k">字体</span> Inter 无衬线</p>
+      <p><span class="k">色彩</span> 冷黑 + 玻璃白，单色系统</p>
+      <p><span class="k">记忆点</span> 玻璃胶囊里的声波柱</p>
+      <p><span class="k">适用</span> 想要更"产品感"、与画廊气质拉开距离时。</p></div>
+  </div>
+  <div class="note">也可以只选中意某个细节，在对话里告诉我（如：要 A 的布局 + C 的琥珀色）。</div>
+
+  <div class="confirm" id="confirm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="dialog">
+      <h2 id="confirmTitle">确认设计方向</h2>
+      <p id="confirmMeta"></p>
+      <textarea id="adjustments" placeholder="可选：写下想调整的地方，比如更稳一点、要 A 的布局 + C 的琥珀色"></textarea>
+      <div class="btns">
+        <button type="button" id="cancelPick">取消</button>
+        <button type="button" id="confirmPick">确认并回传</button>
+      </div>
+    </div>
+  </div>
+  <div class="pickbar" id="pickbar"></div>
+
+<script>
+  let pending = null;
+  function dials(){
+    return {
+      variance: Number(document.getElementById('variance').value),
+      motion: Number(document.getElementById('motion').value),
+      density: Number(document.getElementById('density').value)
+    };
+  }
+  ['variance','motion','density'].forEach(id => {
+    const input = document.getElementById(id), out = document.getElementById(id + 'Out');
+    input.addEventListener('input', () => { out.value = input.value; out.textContent = input.value; });
+  });
+  function selectionText(payload){
+    const values = payload.dials || dials();
+    const advice = payload.adjustments ? '；建议：' + payload.adjustments : '';
+    return payload.label + '；拨盘：视觉冒险度 ' + values.variance +
+      ' / 动效强度 ' + values.motion + ' / 信息密度 ' + values.density + advice;
+  }
+  async function sendSelection(payload){
+    const msg = selectionText(payload);
+    if (location.protocol === 'file:') {
+      if (navigator.clipboard) await navigator.clipboard.writeText(msg).catch(()=>{});
+      return {ok:false, fallback:true};
+    }
+    const res = await fetch('/api/select', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    return res.json();
+  }
+  function openConfirm(i, name){
+    document.querySelectorAll('.card').forEach((c,idx)=>c.classList.toggle('selected', idx===i));
+    const id = 'ABCD'[i];
+    pending = {id, name, label:'选 ' + id + '：' + name};
+    const values = dials();
+    document.getElementById('confirmMeta').textContent =
+      pending.label + ' · 视觉冒险度 ' + values.variance + ' / 动效强度 ' + values.motion + ' / 信息密度 ' + values.density;
+    document.getElementById('confirm').classList.add('open');
+    document.getElementById('adjustments').focus();
+  }
+  async function confirmSelection(){
+    if(!pending) return;
+    const msg = pending.label;
+    const bar = document.getElementById('pickbar');
+    const payload = {...pending, dials: dials(), adjustments: document.getElementById('adjustments').value.trim()};
+    const result = await sendSelection(payload);
+    bar.textContent = result.ok
+      ? '已选择 ' + msg + ' — 已回传'
+      : '已选择 ' + msg + ' — 当前为静态降级，请回到对话发送这句话';
+    bar.classList.add('show');
+    document.getElementById('confirm').classList.remove('open');
+    if (!result.ok && navigator.clipboard) navigator.clipboard.writeText(msg).catch(()=>{});
+  }
+  document.querySelectorAll('.card').forEach((c,i)=>{
+    c.addEventListener('click', e=>{
+      if (e.target.closest('.qmdp-pick-button') || true) {
+        const names = ['发丝编辑','纸质唱片','黑胶仪表','玻璃声波'];
+        openConfirm(i, names[i]);
+      }
+    });
+  });
+  document.addEventListener('keydown', e=>{
+    const i = ['1','2','3','4'].indexOf(e.key);
+    if(i>-1){ const c=document.querySelectorAll('.card')[i]; if(c) c.click(); }
+  });
+  document.getElementById('cancelPick').onclick = () => document.getElementById('confirm').classList.remove('open');
+  document.getElementById('confirmPick').onclick = confirmSelection;
+</script>
+</body>
+</html>

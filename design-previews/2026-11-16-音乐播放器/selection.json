@@ -1,0 +1,14 @@
+{
+  "id": "B",
+  "label": "选 B：纸质唱片",
+  "name": "纸质唱片",
+  "notes": "",
+  "dials": {
+    "variance": 5,
+    "motion": 5,
+    "density": 3
+  },
+  "adjustments": "可以把这个纸片的播放器和画册的样式做一个融合，画册的卡片上面放照片的地方用来放封面，下面写照片名字的地方整个换成这个制片播放器",
+  "source": "preview",
+  "receivedAt": "2026-11-16T12:48:44.824Z"
+}
