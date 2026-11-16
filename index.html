@@ -209,6 +209,39 @@
   .contact a { color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:4px; transition:border-color .4s; }
   .contact a:hover { border-color:var(--ink); }
 
+  /* —— Music 画册 —— */
+  .work .frame.mframe { display:flex; align-items:center; justify-content:center;
+    background:rgba(232,230,225,.03); position:relative; }
+  .m-glyph { font-size:54px; line-height:1; color:rgba(232,230,225,.2); user-select:none;
+    transition:color .5s, transform .5s var(--ease-out); font-family:var(--display,serif); }
+  .work:hover .m-glyph { color:rgba(232,230,225,.44); transform:scale(1.06); }
+  .m-dur { position:absolute; right:12px; bottom:10px; font-size:10px; letter-spacing:.24em;
+    color:var(--dim); font-family:var(--display,serif); font-style:italic; }
+  .work[data-type="music"] .frame span:not(.m-glyph):not(.m-dur) { display:none; }
+
+  /* —— 灯箱音频播放器 —— */
+  .lb-audio { display:none; width:min(560px,86vw); align-items:center; gap:24px;
+    padding:28px 32px; border:1px solid var(--line);
+    background:rgba(232,230,225,.03); backdrop-filter:blur(4px); }
+  .lightbox.on.audio-mode .lb-audio { display:flex; }
+  .lightbox.audio-mode #lb-img { display:none; }
+  .lb-play { flex:none; width:58px; height:58px; border-radius:50%;
+    border:1px solid rgba(232,230,225,.45); background:none;
+    color:var(--ink); font-size:15px; cursor:pointer; letter-spacing:-2px;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .3s, background .3s, transform .2s; }
+  .lb-play:hover { border-color:rgba(232,230,225,.85); background:rgba(232,230,225,.07); }
+  .lb-play:active { transform:scale(.95); }
+  .lb-play-ic { pointer-events:none; display:block; transform:translateX(1px); }
+  .lb-track { flex:1; display:flex; flex-direction:column; gap:12px; min-width:0; }
+  .lb-seek { height:1px; background:var(--line); position:relative; cursor:pointer; }
+  .lb-seek::after { content:''; position:absolute; left:0; right:0; top:-7px; bottom:-7px; }
+  .lb-seek-fill { position:absolute; left:0; top:0; bottom:0; width:0%;
+    background:var(--ink); transition:width .18s linear; }
+  .lb-times { display:flex; justify-content:space-between;
+    font-size:10px; letter-spacing:.24em; color:var(--dim);
+    font-family:var(--display,serif); font-style:italic; }
+
   footer { padding:60px 5vw; text-align:center; font-size:10px; letter-spacing:4px; color:var(--dim); border-top:1px solid var(--line); }
 
   [lang-switch] { display:none; }
@@ -323,6 +356,20 @@
       <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
     </div>
   </div>
+  <div class="album-group">
+    <div class="album-title">Music</div>
+    <div class="works ready" data-album>
+      <div class="work" data-cat="music" data-type="music" data-src="music/01.m4a" data-dur="03:43">
+        <div class="num-row"><span class="num">01</span></div>
+        <div class="frame mframe">
+          <span class="m-glyph" aria-hidden="true">&#9834;</span>
+          <span class="m-dur">03:43</span>
+        </div>
+        <div class="meta"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="works-empty" id="worksEmpty"><span lang-switch="zh">该分类的作品，还在路上</span><span lang-switch="en">works in this category are on the way</span><span lang-switch="ja">このカテゴリーの作品は、まだ旅途中</span></div>
 </section>
 
@@ -358,6 +405,14 @@
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <img id="lb-img" src="" alt="">
+  <div class="lb-audio" id="lb-audio" aria-hidden="true">
+    <button class="lb-play" id="lb-play" aria-label="播放/暂停"><span class="lb-play-ic" id="lb-play-ic">&#9654;</span></button>
+    <div class="lb-track">
+      <div class="lb-seek" id="lb-seek"><div class="lb-seek-fill" id="lb-seek-fill"></div></div>
+      <div class="lb-times"><span id="lb-cur">00:00</span><span id="lb-dur">03:43</span></div>
+    </div>
+    <audio id="lb-aud" preload="metadata"></audio>
+  </div>
   <button class="lb-nav lb-prev" aria-label="上一张">←</button>
   <button class="lb-nav lb-next" aria-label="下一张">→</button>
   <div class="lb-cap" id="lb-cap"></div>
@@ -452,10 +507,26 @@
         var v = vis(); var n = v.length; if (!n) return;
         var idx = (i + n) % n;
         var w = v[idx];
-        var im = w.querySelector('img');
-        img.src = im ? im.src : '';
         var num = w.querySelector('.num');
         cap.textContent = (num ? num.textContent : String(idx + 1)) + ' / 0' + n;
+        var isMusic = w.getAttribute('data-type') === 'music';
+        lb.classList.toggle('audio-mode', isMusic);
+        document.getElementById('lb-audio').setAttribute('aria-hidden', isMusic ? 'false' : 'true');
+        var audEl = document.getElementById('lb-aud');
+        if (isMusic) {
+          img.src = '';
+          audEl.src = w.getAttribute('data-src');
+          document.getElementById('lb-dur').textContent = w.getAttribute('data-dur') || '';
+          document.getElementById('lb-cur').textContent = '00:00';
+          document.getElementById('lb-seek-fill').style.width = '0%';
+          setPlayIcon(false);
+          var pr = audEl.play();
+          if (pr && pr.catch) pr.catch(function () {});
+        } else {
+          audEl.pause();
+          var im = w.querySelector('img');
+          img.src = im ? im.src : '';
+        }
         api._idx = idx;
       }
       function showCard(w) {
@@ -486,13 +557,41 @@
     });
 
     lb.addEventListener('click', function (e) {
-      if (e.target === lb || e.target === img) { lb.classList.remove('on'); lb.setAttribute('aria-hidden', 'true'); }
+      if (e.target === lb || e.target === img) { lb.classList.remove('on'); lb.setAttribute('aria-hidden', 'true'); audEl.pause(); }
       else if (e.target.classList.contains('lb-prev')) { if (lbAlbum) lbAlbum.show(lbAlbum._idx - 1); }
       else if (e.target.classList.contains('lb-next')) { if (lbAlbum) lbAlbum.show(lbAlbum._idx + 1); }
     });
+    // —— 音频播放器接线 ——
+    var audEl = document.getElementById('lb-aud');
+    var playBtn = document.getElementById('lb-play');
+    var playIc = document.getElementById('lb-play-ic');
+    function setPlayIcon(playing) { playIc.innerHTML = playing ? '&#10073;&#10073;' : '&#9654;'; }
+    function fmtTime(t) { t = Math.floor(t || 0); var m = Math.floor(t / 60), s = t % 60;
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s; }
+    playBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!audEl.getAttribute('src')) return;
+      if (audEl.paused) { var pr = audEl.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      else audEl.pause();
+    });
+    audEl.addEventListener('play', function () { setPlayIcon(true); });
+    audEl.addEventListener('pause', function () { setPlayIcon(false); });
+    audEl.addEventListener('ended', function () { setPlayIcon(false); });
+    audEl.addEventListener('timeupdate', function () {
+      var d = audEl.duration || 0;
+      document.getElementById('lb-seek-fill').style.width = (d ? (audEl.currentTime / d * 100) : 0) + '%';
+      document.getElementById('lb-cur').textContent = fmtTime(audEl.currentTime);
+    });
+    document.getElementById('lb-seek').addEventListener('click', function (e) {
+      e.stopPropagation();
+      var r = this.getBoundingClientRect();
+      var ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+      if (audEl.duration) audEl.currentTime = ratio * audEl.duration;
+    });
+
     document.addEventListener('keydown', function (e) {
       if (lb.classList.contains('on')) {
-        if (e.key === 'Escape') lb.classList.remove('on');
+        if (e.key === 'Escape') { lb.classList.remove('on'); audEl.pause(); }
         if (e.key === 'ArrowLeft' && lbAlbum) lbAlbum.show(lbAlbum._idx - 1);
         if (e.key === 'ArrowRight' && lbAlbum) lbAlbum.show(lbAlbum._idx + 1);
         return;
