@@ -741,7 +741,13 @@
         if (e) e.textContent = pair[2];
       }
       set(document.querySelector('.pill[data-view="album"]'), [zh[0], ja[0], en[0]]);
-      closeBtns.forEach(function (el) { set(el, [zh[1], ja[1], en[1]]); });
+      closeBtns.forEach(function (el) {
+        // Music 分组的按钮永远是「专辑」措辞（它就是音乐相册的门），其余随分类语境
+        var w = el.previousElementSibling;
+        var isMusic = w && w.querySelector('[data-type="music"]');
+        if (isMusic) set(el, ['专辑', 'アルバムを閉じる', en[1]]);
+        else set(el, [zh[1], ja[1], en[1]]);
+      });
     }
 
     function updateEmpty() {
