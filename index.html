@@ -163,8 +163,8 @@
   .album-close::before { content:'×'; margin-right:10px; font-size:15px; color:rgba(232,230,225,0.65); }
   .album-close:hover { border-color:rgba(232,230,225,0.6); background:rgba(232,230,225,0.08); color:#f2f0eb; transform:translateY(-2px); }
   .album-close:hover::before { color:#f2f0eb; }
-  body:has(.works.open) .album-close { display:block; }
-  body:has(.works.grid-view) .album-close { display:none; }
+  .works.open + .album-close { display:block; }
+  .works.grid-view + .album-close { display:none; }
 
   /* —— 画册v3：工具栏 + 分类 + 双视图 —— */
   .works-toolbar { position:relative; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:7vh; }
@@ -370,6 +370,7 @@
       </div>
       <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
     </div>
+    <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
   <div class="album-group">
     <div class="album-title">Loose</div>
@@ -391,6 +392,7 @@
       </div>
       <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
     </div>
+    <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
   <div class="album-group">
     <div class="album-title">Music</div>
@@ -404,10 +406,10 @@
         <div class="meta">平行的风</div>
       </div>
     </div>
+    <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
 
   <div class="works-empty" id="worksEmpty"><span lang-switch="zh">该分类的作品，还在路上</span><span lang-switch="en">works in this category are on the way</span><span lang-switch="ja">このカテゴリーの作品は、まだ旅途中</span></div>
-  <div class="album-close" id="albumClose"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
 </section>
 
 <section id="about">
@@ -479,7 +481,7 @@
     var img = document.getElementById('lb-img');
     var cap = document.getElementById('lb-cap');
     var toolbar = document.querySelector('.works-toolbar');
-    var closeBtn = document.getElementById('albumClose');
+    var closeBtns = document.querySelectorAll('.album-close');
     var albums = Array.from(document.querySelectorAll('.works[data-album]'));
     if (!albums.length) throw new Error('no album containers');
     var state = { view: 'album', cat: 'all' };
@@ -615,12 +617,13 @@
       });
     });
 
-    if (closeBtn) closeBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (openAlbum) {
-        var cur = apis.find(function (a) { return a.album === openAlbum; });
+    closeBtns.forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var w = b.previousElementSibling;
+        var cur = apis.find(function (a) { return a.album === w; });
         if (cur) cur.toggle(false);
-      }
+      });
     });
 
     lb.addEventListener('click', function (e) {
@@ -738,7 +741,7 @@
         if (e) e.textContent = pair[2];
       }
       set(document.querySelector('.pill[data-view="album"]'), [zh[0], ja[0], en[0]]);
-      set(closeBtn, [zh[1], ja[1], en[1]]);
+      closeBtns.forEach(function (el) { set(el, [zh[1], ja[1], en[1]]); });
     }
 
     function updateEmpty() {
