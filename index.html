@@ -149,9 +149,9 @@
   .album-hint:hover { color:rgba(232,230,225,0.9); }
   .works.open .album-hint { opacity:0; pointer-events:none; }
   /* —— 文件夹效果：画册合上时，卡片叠像装在文件夹里（只加背景层，不改原布局与比例） —— */
-  .album-folder { position:absolute; left:50%; top:0; transform:translateX(-50%); width:calc(var(--card-w,300px) + 64px); max-width:94%; height:calc(100% - 30px); z-index:0; pointer-events:none; border-radius:16px; background:linear-gradient(165deg,#1a1b1d 0%,#101011 72%); border:1px solid rgba(232,230,225,0.09); box-shadow:0 44px 80px -38px rgba(0,0,0,0.9), inset 0 1px 0 rgba(232,230,225,0.06); transition:opacity .5s; }
-  .album-folder::before { content:''; position:absolute; top:-11px; left:24px; width:36%; height:24px; background:#1a1b1d; border:1px solid rgba(232,230,225,0.09); border-bottom:none; border-radius:10px 16px 0 0; }
-  .album-folder::after { content:''; position:absolute; left:0; right:0; bottom:0; height:44%; background:linear-gradient(180deg, rgba(40,40,44,0.55), rgba(12,12,13,0.9) 55%); clip-path:polygon(0 14%, 58% 14%, 68% 0, 100% 0, 100% 100%, 0 100%); box-shadow:inset 0 18px 28px -18px rgba(232,230,225,0.12); }
+  .album-folder { position:absolute; left:50%; top:0; transform:translateX(-50%); width:calc(var(--card-w,300px) + 64px); max-width:94%; height:calc(100% - 30px); z-index:0; pointer-events:none; border-radius:16px; background:linear-gradient(165deg,#141415 0%,#0d0d0e 72%); border:1px solid rgba(232,230,225,0.09); box-shadow:0 44px 80px -38px rgba(0,0,0,0.9); transition:opacity .3s cubic-bezier(.23,1,.32,1); }
+  .album-folder::before { content:''; position:absolute; top:-11px; left:24px; width:36%; height:24px; background:#141415; border:1px solid rgba(232,230,225,0.09); border-bottom:none; border-radius:10px 16px 0 0; }
+  .album-folder::after { content:''; position:absolute; left:0; right:0; bottom:0; height:44%; background:linear-gradient(180deg, rgba(32,32,35,0.5), rgba(10,10,11,0.9) 55%); clip-path:polygon(0 14%, 58% 14%, 68% 0, 100% 0, 100% 100%, 0 100%); }
   .works.open .album-folder, .works.grid-view .album-folder, .works.switching .album-folder { opacity:0; }
   /* 收起按钮：内容下方居中（与展示网站同款） */
   .album-close {
