@@ -745,7 +745,7 @@
         // Music 分组的按钮永远是「专辑」措辞（它就是音乐相册的门），其余随分类语境
         var w = el.previousElementSibling;
         var isMusic = w && w.querySelector('[data-type="music"]');
-        if (isMusic) set(el, ['专辑', 'アルバムを閉じる', 'close album']);
+        if (isMusic) set(el, ['收起专辑', 'アルバムを閉じる', 'close album']);
         else set(el, [zh[1], ja[1], en[1]]);
       });
     }
