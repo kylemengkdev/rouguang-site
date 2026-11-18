@@ -196,6 +196,10 @@
 
   .work.cat-hidden { display:none; }
   .album-group { margin-bottom:10vh; }
+  #works { display:grid; grid-template-columns:1fr; }
+  #works > .sec-label, #works > .works-toolbar, #works > .works-empty { grid-column:1 / -1; }
+  .album-group.span-all { grid-column:1 / -1; }
+  @media (min-width:700px) { #works { grid-template-columns:1fr 1fr; column-gap:4vw; } }
   .album-title { text-align:center; font-size:12px; letter-spacing:9px; color:var(--bright); margin-bottom:7vh; }
   .works-empty { display:none; text-align:center; padding:14vh 0; font-size:12px; letter-spacing:7px; color:var(--dim); }
   .works-empty.show { display:block; }
@@ -630,6 +634,7 @@
           openAlbum = album;
         } else if (openAlbum === album) { openAlbum = null; }
         album.classList.toggle('open', open);
+        group.classList.toggle('span-all', open);
         if (toolbar) toolbar.classList.toggle('album-open', !!openAlbum);
         layout();
       }
@@ -870,6 +875,7 @@
           document.querySelectorAll('.pill[data-view]').forEach(function (x) { x.classList.toggle('on', x === b); });
           apis.forEach(function (a) {
             a.album.classList.toggle('grid-view', v === 'grid');
+            a.album.closest('.album-group').classList.toggle('span-all', v === 'grid');
             if (v === 'grid') {
               a.album.classList.remove('open');
               a.works.forEach(function (w) { w.style.transform = ''; w.style.transitionDelay = ''; w.style.removeProperty('--zi'); });
@@ -884,7 +890,7 @@
       });
     });
 
-    if (state.view === 'grid') apis.forEach(function (a) { a.album.classList.add('grid-view'); });
+    if (state.view === 'grid') apis.forEach(function (a) { a.album.classList.add('grid-view'); a.album.closest('.album-group').classList.add('span-all'); });
     document.querySelectorAll('.pill[data-cat]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-cat') === state.cat); });
     updateAlbumWord();
     document.querySelectorAll('.pill[data-view]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-view') === state.view); });
