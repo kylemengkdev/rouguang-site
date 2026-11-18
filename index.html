@@ -387,7 +387,7 @@
         <div class="meta"></div>
       </div>
       <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
-      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">照片</span><span class="sleeve-label"><span class="t">Observation</span><span class="s">海岸 · 观察</span></span></div>
+      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">照片</span><span class="sleeve-label"><span class="t">Observation</span></span></div>
     </div>
     <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
@@ -474,7 +474,7 @@
         <div class="meta"></div>
       </div>
       <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
-      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">照片</span><span class="sleeve-label"><span class="t">Loose</span><span class="s">城市 · 雨夜</span></span></div>
+      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">照片</span><span class="sleeve-label"><span class="t">Loose</span></span></div>
     </div>
     <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
@@ -489,7 +489,7 @@
         </div>
         <div class="meta">平行的风</div>
       </div>
-      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">流行</span><span class="sleeve-label"><span class="t">Music</span><span class="s">平行的风</span></span></div>
+      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">流行</span><span class="sleeve-label"><span class="t">Music</span></span></div>
     </div>
     <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
@@ -592,7 +592,7 @@
         if (isGrid() || !vis().length) { album.style.height = ''; return; }
         var open = album.classList.contains('open');
         var W = album.clientWidth || 800;
-        var cardW = Math.round(Math.min(330, Math.max(210, W * (W >= 980 ? 0.26 : W >= 640 ? 0.38 : 0.8))));
+        var cardW = Math.round(Math.min(275, Math.max(175, W * (W >= 980 ? 0.216 : W >= 640 ? 0.316 : 0.666))));
         album.style.setProperty('--card-w', cardW + 'px');
         var first = vis()[0] || works[0];
         var cardH = first ? first.offsetHeight : 360;
