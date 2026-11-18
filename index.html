@@ -110,7 +110,7 @@
   .sec-label { font-size:10px; letter-spacing:6px; color:var(--dim); text-transform:uppercase; margin-bottom:12vh; display:flex; align-items:center; gap:22px; }
   .sec-label::after { content:''; flex:1; height:1px; background:var(--line); }
 
-  /* —— 画册 · 名姓片 —— */
+  /* —— 相册 · 名姓片 —— */
   .works { position:relative; display:block; height:660px; }
   .work {
     position:absolute; top:0; left:0;
@@ -145,12 +145,12 @@
   .work .meta { display:flex; justify-content:space-between; align-items:center; padding:30px 3px 30px; margin-top:15px; font-size:11px; letter-spacing:5px; color:rgba(232,230,225,0.62); border-top:1px solid rgba(232,230,225,0.07); }
   .work .meta span:last-child { color:var(--dim); }
   /* —— 卡套：明信片装进卡套（参数 1:1 复刻 demo 定稿；只加壳，卡片本体与布局不动） —— */
-  .album-sleeve-front { position:absolute; left:50%; top:10px; width:calc(var(--card-w,300px) * .96); max-width:57.6%; height:calc(var(--card-w,300px) + 174px); z-index:60; pointer-events:none; border-radius:calc(var(--card-w,300px) * .0867); overflow:hidden; transform:translateX(calc(-50% - var(--card-w,300px) * .25)); box-shadow:32px 0 48px rgba(0,0,0,0.40), 5px 0 13px rgba(0,0,0,0.28); transition:opacity .3s var(--ease-out); }
+  .album-sleeve-front { position:absolute; left:50%; top:10px; width:calc(var(--card-w,300px) * .96); max-width:57.6%; height:calc(var(--card-w,300px) + 125px); z-index:60; pointer-events:none; border-radius:calc(var(--card-w,300px) * .0867); overflow:hidden; transform:translateX(calc(-50% - var(--card-w,300px) * .25)); box-shadow:32px 0 48px rgba(0,0,0,0.40), 5px 0 13px rgba(0,0,0,0.28); transition:opacity .3s var(--ease-out); }
   .album-sleeve-front::before { content:''; position:absolute; inset:0; clip-path:polygon(0 0,100% 0,100% 28%,98.2% 34%,95.4% 40%,92.8% 45%,91.4% 48.5%,91.2% 50%,91.4% 51.5%,92.8% 55%,95.4% 60%,98.2% 66%,100% 72%,100% 100%,0 100%); background:linear-gradient(112deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 30%,rgba(255,255,255,0) 56%),radial-gradient(130% 95% at 16% -10%,rgba(255,255,255,.16),rgba(255,255,255,0) 52%),linear-gradient(90deg,rgba(0,0,0,.04) 0%,rgba(0,0,0,.22) 68%,rgba(0,0,0,.45) 100%),linear-gradient(105deg,rgba(42,42,47,.88) 0%,rgba(20,20,22,.86) 52%,rgba(6,6,7,.90) 100%); }
   .album-sleeve-front::after { content:''; position:absolute; inset:0; clip-path:polygon(0 0,100% 0,100% 28%,98.2% 34%,95.4% 40%,92.8% 45%,91.4% 48.5%,91.2% 50%,91.4% 51.5%,92.8% 55%,95.4% 60%,98.2% 66%,100% 72%,100% 100%,0 100%); box-shadow:inset 0 1px 0 rgba(255,255,255,.20), inset 0 0 0 1px rgba(255,255,255,.05); }
 
   .album-sleeve-front .sleeve-badge { position:absolute; left:7.5%; top:9%; z-index:1; display:inline-flex; align-items:center; gap:6px; font-size:calc(var(--card-w,300px) * .04); font-weight:500; letter-spacing:.2em; color:rgba(255,255,255,.92); background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); padding:.35em .7em; border-radius:999px; backdrop-filter:blur(12px) saturate(1.4); -webkit-backdrop-filter:blur(12px) saturate(1.4); box-shadow:0 2px 12px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.25); transition:opacity .3s var(--ease-out); }
-  body:not(.cat-all) .album-sleeve-front .sleeve-badge { opacity:0; }
+  
   .album-sleeve-front .sleeve-label { position:absolute; left:7.5%; bottom:9%; z-index:1; display:block; max-width:72%; color:#fff; }
   .album-sleeve-front .sleeve-label .t { display:block; font-size:calc(var(--card-w,300px) * .0736); font-weight:700; letter-spacing:.14em; line-height:1.25; text-shadow:0 1px 8px rgba(0,0,0,.5); }
   .album-sleeve-front .sleeve-label .s { display:block; font-size:calc(var(--card-w,300px) * .0512); color:rgba(255,255,255,.66); margin-top:2px; letter-spacing:.2em; }
@@ -181,18 +181,20 @@
   .works.open + .album-close { display:block; }
   .works.grid-view + .album-close { display:none; }
 
-  /* —— 画册v3：工具栏 + 分类 + 双视图 —— */
+  /* —— 相册v3：工具栏 + 分类 + 双视图 —— */
   .works-toolbar { position:relative; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:7vh; }
   .works-toolbar .cats, .works-toolbar .views { display:flex; gap:10px; flex-wrap:wrap; }
   .pill {
     font-size:12px; letter-spacing:4px; font-family:var(--serif);
     padding:10px 22px; border-radius:999px;
-    border:1px solid rgba(232,230,225,0.32);
-    background:rgba(232,230,225,0.03); color:rgba(232,230,225,0.7); cursor:pointer;
+    border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.14); color:rgba(255,255,255,.85); cursor:pointer;
+    backdrop-filter:blur(12px) saturate(1.4); -webkit-backdrop-filter:blur(12px) saturate(1.4);
+    box-shadow:0 2px 12px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.25);
     transition:border-color .3s, color .3s, background .3s;
   }
-  .pill:hover { border-color:rgba(232,230,225,0.6); color:#f2f0eb; background:rgba(232,230,225,0.07); }
-  .pill.on { background:rgba(232,230,225,0.1); border-color:rgba(232,230,225,0.55); color:#f2f0eb; }
+  .pill:hover { border-color:rgba(255,255,255,.5); color:#fff; background:rgba(255,255,255,.2); }
+  .pill.on { background:rgba(255,255,255,.24); border-color:rgba(255,255,255,.6); color:#fff; }
 
   .work.cat-hidden { display:none; }
   .album-group { margin-bottom:10vh; }
@@ -228,7 +230,7 @@
   .contact a { color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:4px; transition:border-color .4s; }
   .contact a:hover { border-color:var(--ink); }
 
-  /* —— Music 画册（方向B：纸片播放器只在灯箱；卡片回归画册原生样） —— */
+  /* —— Music 相册（方向B：纸片播放器只在灯箱；卡片回归相册原生样） —— */
   .work .frame.mframe { position:relative; display:flex; align-items:center; justify-content:center; }
   .work .frame.mframe > span { display:block; }
   .m-glyph { font-size:54px; line-height:1; color:rgba(232,230,225,.2); user-select:none;
@@ -365,7 +367,7 @@
       <button class="pill" data-cat="music"><span lang-switch="zh">音乐</span><span lang-switch="en">music</span><span lang-switch="ja">音楽</span></button>
     </div>
     <div class="views">
-      <button class="pill on" data-view="album"><span lang-switch="zh">画册</span><span lang-switch="en">album</span><span lang-switch="ja">画帖</span></button>
+      <button class="pill on" data-view="album"><span lang-switch="zh">相册</span><span lang-switch="en">album</span><span lang-switch="ja">画帖</span></button>
       <button class="pill" data-view="grid"><span lang-switch="zh">网格</span><span lang-switch="en">grid</span><span lang-switch="ja">格子</span></button>
     </div>
   </div>
@@ -386,10 +388,10 @@
         <div class="frame"><span>img/5.jpg</span><img src="img/5.jpg" alt="03"></div>
         <div class="meta"></div>
       </div>
-      <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
-      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">照片</span><span class="sleeve-label"><span class="t">Observation</span></span></div>
+      <div class="album-hint"><span lang-switch="zh">相册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
+      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">3张</span><span class="sleeve-label"><span class="t">Observation</span></span></div>
     </div>
-    <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
+    <div class="album-close"><span lang-switch="zh">收起相册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
   <div class="album-group">
     <div class="works ready" data-album>
@@ -473,10 +475,10 @@
         <div class="frame"><span>img/eeb9c9d9e676b5d11f5a4818e5ea899f.jpg</span><img src="img/eeb9c9d9e676b5d11f5a4818e5ea899f.jpg" alt="16" loading="lazy"></div>
         <div class="meta"></div>
       </div>
-      <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
-      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">照片</span><span class="sleeve-label"><span class="t">Loose</span></span></div>
+      <div class="album-hint"><span lang-switch="zh">相册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
+      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">16张</span><span class="sleeve-label"><span class="t">Loose</span></span></div>
     </div>
-    <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
+    <div class="album-close"><span lang-switch="zh">收起相册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
   <div class="album-group">
     <div class="album-title">Music</div>
@@ -489,9 +491,9 @@
         </div>
         <div class="meta">平行的风</div>
       </div>
-      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">流行</span><span class="sleeve-label"><span class="t">Music</span></span></div>
+      <div class="album-sleeve-front" aria-hidden="true"><span class="sleeve-badge">1首</span><span class="sleeve-label"><span class="t">Music</span></span></div>
     </div>
-    <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
+    <div class="album-close"><span lang-switch="zh">收起相册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
 
   <div class="works-empty" id="worksEmpty"><span lang-switch="zh">该分类的作品，还在路上</span><span lang-switch="en">works in this category are on the way</span><span lang-switch="ja">このカテゴリーの作品は、まだ旅途中</span></div>
@@ -559,7 +561,7 @@
   window.addEventListener('load', function () { document.body.classList.add('loaded'); });
   setTimeout(function () { document.body.classList.add('loaded'); }, 1200);
 
-  // —— 画册开合 + 灯箱（合并模块，故障隔离）——
+  // —— 相册开合 + 灯箱（合并模块，故障隔离）——
   try {
   (function () {
     var lb = document.getElementById('lightbox');
@@ -626,7 +628,7 @@
           w.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + r + 'deg)';
           maxBottom = Math.max(maxBottom, y + cardH);
         });
-        album.style.height = Math.round(open ? maxBottom + 64 : cardW + 229) + 'px';
+        album.style.height = Math.round(open ? maxBottom + 64 : cardW + 180) + 'px';
       }
       function toggle(open) {
         if (open) {
@@ -803,7 +805,7 @@
       }
     });
 
-    // 分区语境措辞：照片=画册 / 音乐=专辑 / 视频=频道（中日英联动）
+    // 分区语境措辞：照片=相册 / 音乐=专辑 / 视频=频道（中日英联动）
     function updateAlbumWord() {
       var cat = state.cat;
       var zh, ja, en;
@@ -816,7 +818,7 @@
         ja = ['チャンネル', 'チャンネルを閉じる'];
         en = ['channel', 'close channel'];
       } else {
-        zh = ['画册', '收起画册'];
+        zh = ['相册', '收起相册'];
         ja = ['画帖', '画帖を閉じる'];
         en = ['album', 'close album'];
       }
@@ -906,6 +908,13 @@
     });
     updateEmpty();
 
+    apis.forEach(function (a) {
+      var badge = a.album.querySelector('.sleeve-badge');
+      if (badge && a.works.length) {
+        var t = a.works[0].getAttribute('data-type');
+        badge.textContent = a.works.length + (t === 'music' ? '首' : '张');
+      }
+    });
     apis.forEach(function (a) { a.layout(); });
     requestAnimationFrame(function () { apis.forEach(function (a) { a.album.classList.add('ready'); a.layout(); }); });
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { apis.forEach(function (a) { a.layout(); }); }); }
