@@ -589,7 +589,7 @@
       var group = album.closest('.album-group') || album;
       function vis() { return works.filter(function (w) { return !w.classList.contains('cat-hidden'); }); }
       function layout() {
-        if (isGrid() || !vis().length) { album.style.height = ''; return; }
+        if (isGrid() || !vis().length) { album.style.height = ''; works.forEach(function (w) { w.style.display = ''; }); return; }
         var open = album.classList.contains('open');
         var W = album.clientWidth || 800;
         var cardW = Math.round(Math.min(242, Math.max(154, W * (W >= 980 ? 0.190 : W >= 640 ? 0.278 : 0.586))));
@@ -604,6 +604,7 @@
         list.forEach(function (w, i) {
           var x, y, r, d;
           if (open) {
+            w.style.display = '';
             var c = i % cols, row = Math.floor(i / cols);
             var cellW = (W - gapX * (cols - 1)) / cols;
             x = Math.round(c * (cellW + gapX) + (cellW - cardW) / 2);
@@ -612,6 +613,8 @@
             d = i * 65;
             w.style.setProperty('--zi', 1);
           } else {
+            if (i >= 3) { w.style.display = 'none'; return; }
+            w.style.display = '';
             var s = STACK[i] || { r: 0, dx: 0, dy: i * 3 };
             x = Math.round((W - cardW) / 2) + s.dx;
             y = 16 + s.dy;
