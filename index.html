@@ -599,7 +599,7 @@
         if (isGrid() || !vis().length) { album.style.height = ''; works.forEach(function (w) { w.style.display = ''; }); return; }
         var open = album.classList.contains('open');
         var W = album.clientWidth || 800;
-        var cardW = Math.round(Math.min(242, Math.max(154, W * (W >= 980 ? 0.190 : W >= 640 ? 0.278 : 0.586))));
+        var cardW = Math.round(open ? Math.min(330, Math.max(210, W * (W >= 980 ? 0.26 : W >= 640 ? 0.38 : 0.8))) : Math.min(242, Math.max(154, W * (W >= 980 ? 0.190 : W >= 640 ? 0.278 : 0.586))));  // 展开后卡片恢复改小前的尺寸，闭合态才用小卡宽配小卡套
         album.style.setProperty('--card-w', cardW + 'px');
         var first = vis()[0] || works[0];
         var cardH = first ? first.offsetHeight : 360;
