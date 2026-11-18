@@ -144,6 +144,16 @@
   .frame > span:not(.num) { display:none; }
   .work .meta { display:flex; justify-content:space-between; align-items:center; padding:30px 3px 30px; margin-top:15px; font-size:11px; letter-spacing:5px; color:rgba(232,230,225,0.62); border-top:1px solid rgba(232,230,225,0.07); }
   .work .meta span:last-child { color:var(--dim); }
+  /* —— 卡套：明信片装进卡套（只加壳，卡片本体与布局不动） —— */
+  .album-sleeve { position:absolute; left:50%; top:6px; transform:translateX(-50%); width:calc(var(--card-w,300px) * 1.92); max-width:96%; height:calc(100% - 58px); z-index:0; pointer-events:none; border-radius:26px; background:linear-gradient(165deg,#141415 0%,#0d0d0e 72%); border:1px solid rgba(232,230,225,0.09); box-shadow:0 44px 80px -38px rgba(0,0,0,0.9); transition:opacity .3s var(--ease-out); }
+  .album-sleeve-front { position:absolute; left:50%; top:6px; width:calc(var(--card-w,300px) * 1.152); max-width:57.6%; height:calc(100% - 58px); z-index:60; pointer-events:none; border-radius:26px; overflow:hidden; transform:translateX(calc(-50% - var(--card-w,300px) * 0.384)); transition:opacity .3s var(--ease-out); }
+  .album-sleeve-front::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,#171718 0%,#101011 100%); clip-path:polygon(0 0,100% 0,100% 26%,94% 34%,90.5% 42%,89.5% 50%,90.5% 58%,94% 66%,100% 74%,100% 100%,0 100%); }
+  .album-sleeve-front::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent 82%,rgba(0,0,0,0.38)); clip-path:polygon(0 0,100% 0,100% 26%,94% 34%,90.5% 42%,89.5% 50%,90.5% 58%,94% 66%,100% 74%,100% 100%,0 100%); }
+  .works.open .album-sleeve, .works.open .album-sleeve-front, .works.grid-view .album-sleeve, .works.grid-view .album-sleeve-front, .works.switching .album-sleeve, .works.switching .album-sleeve-front { opacity:0; }
+  .works:not(.open) .work { transition:transform .8s var(--ease-out), opacity .6s, border-color .5s, box-shadow .5s, margin-left .3s var(--ease-out); }
+  .works:not(.open):not(.grid-view):hover .work { margin-left:34px; }
+  @media (max-width:639px){ .album-sleeve-front { transform:translateX(-83.33%); } }
+  @media (prefers-reduced-motion:reduce){ .album-sleeve, .album-sleeve-front { transition:none; } .works:not(.open):not(.grid-view):hover .work { margin-left:0; } }
 
   .album-hint { position:absolute; left:0; right:0; bottom:-4px; text-align:center; font-size:11px; letter-spacing:6px; color:rgba(232,230,225,0.62); cursor:pointer; transition:opacity .45s, color .3s; padding:16px 0; }
   .album-hint:hover { color:rgba(232,230,225,0.9); }
@@ -353,6 +363,7 @@
   <div class="album-group">
     <div class="album-title">Observation</div>
     <div class="works ready" data-album>
+      <div class="album-sleeve" aria-hidden="true"></div>
       <div class="work" data-cat="photo" data-type="photo">
         <div class="num-row"><span class="num">01</span></div>
         <div class="frame"><span>img/1.jpg</span><img src="img/1.jpg" alt="01"></div>
@@ -369,12 +380,14 @@
         <div class="meta"></div>
       </div>
       <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
+      <div class="album-sleeve-front" aria-hidden="true"></div>
     </div>
     <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
   <div class="album-group">
     <div class="album-title">Loose</div>
     <div class="works ready" data-album>
+      <div class="album-sleeve" aria-hidden="true"></div>
       <div class="work" data-cat="photo" data-type="photo">
         <div class="num-row"><span class="num">01</span></div>
         <div class="frame"><span>img/3.jpg</span><img src="img/3.jpg" alt="01"></div>
@@ -456,12 +469,14 @@
         <div class="meta"></div>
       </div>
       <div class="album-hint"><span lang-switch="zh">画册&nbsp;·&nbsp;点击展开</span><span lang-switch="en">album&nbsp;·&nbsp;tap to open</span><span lang-switch="ja">画帖&nbsp;·&nbsp;クリックで開く</span></div>
+      <div class="album-sleeve-front" aria-hidden="true"></div>
     </div>
     <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
   <div class="album-group">
     <div class="album-title">Music</div>
     <div class="works ready" data-album>
+      <div class="album-sleeve" aria-hidden="true"></div>
       <div class="work" data-cat="music" data-type="music" data-src="music/01.m4a" data-dur="03:43" aria-label="平行的风">
         <div class="num-row"><span class="num">01</span></div>
         <div class="frame mframe">
@@ -470,6 +485,7 @@
         </div>
         <div class="meta">平行的风</div>
       </div>
+      <div class="album-sleeve-front" aria-hidden="true"></div>
     </div>
     <div class="album-close"><span lang-switch="zh">收起画册</span><span lang-switch="en">close album</span><span lang-switch="ja">画帖を閉じる</span></div>
   </div>
